@@ -28,6 +28,5 @@ compiles and runs in Linux (CentOS 7 64-bit).
   generate the same sequence of numbers for a given seed, regardless of
   the architecture, floating point representation, or byte order used.
 * This code does not support runtime loading of dynamic libraries.
-* The luafilesystem suite is built in.  Not everything works -- there
-  may be issues with shortcuts / symbolic links in Windows -- but basic
-  directory and file traversal work.
+* The luafilesystem suite is built in.  Not everything works, but basic
+  directory and file traversal are present.

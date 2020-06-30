@@ -500,12 +500,14 @@ for a in lfs.dir(".") do
 end
 </pre>
 
-Note that this port of lfs will not
-return timestamps (to avoid Y2038) issues, and that only the calls
+Note that only the calls
 <code>lfs.sttributes</code>, <code>lfs.chdir</code>, 
 <code>lfs.currentdir</code>, <code>lfs.dir</code>, 
 <code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
-<code>lfs.symlinkattributes</code> are included.
+<code>lfs.symlinkattributes</code> are included.  The only
+file attributes are <code>size</code>, <code>mode</code>, and
+<code>nlink</code>; other attributes return nonsense values in
+Windows or have Y2038 issues.
 
 <p><A HREF="#contents">Contents</A>
 

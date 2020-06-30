@@ -2,9 +2,10 @@
 ** LuaFileSystem
 ** Copyright Kepler Project 2003 - 2020
 ** (http://keplerproject.github.io/luafilesystem)
+** Changes by Sam Trenholme for lunacy
 **
 ** File system manipulation library.
-** This library offers these functions:
+** This library offers some of these functions:
 **   lfs.attributes (filepath [, attributename | attributetable])
 **   lfs.chdir (path)
 **   lfs.currentdir ()
@@ -987,20 +988,20 @@ struct _stat_members {
 
 struct _stat_members members[] = {
   { "mode", push_st_mode },
-  { "dev", push_st_dev },
-  { "ino", push_st_ino },
+  //{ "dev", push_st_dev },
+  //{ "ino", push_st_ino },
   { "nlink", push_st_nlink },
-  { "uid", push_st_uid },
-  { "gid", push_st_gid },
-  { "rdev", push_st_rdev },
+  //{ "uid", push_st_uid },
+  //{ "gid", push_st_gid },
+  //{ "rdev", push_st_rdev },
   //{ "access", push_st_atime },
   //{ "modification", push_st_mtime },
   //{ "change", push_st_ctime },
   { "size", push_st_size },
-  { "permissions", push_st_perm },
+  //{ "permissions", push_st_perm },
 #ifndef _WIN32
-  { "blocks", push_st_blocks },
-  { "blksize", push_st_blksize },
+  //{ "blocks", push_st_blocks },
+  //{ "blksize", push_st_blksize },
 #endif
   { NULL, NULL }
 };
