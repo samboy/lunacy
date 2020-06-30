@@ -500,8 +500,12 @@ for a in lfs.dir(".") do
 end
 </pre>
 
-Calls also include <code>lfs.chdir()</code> and 
-<code>lfs.currentdir()</code>
+Note that this port of lfs will not
+return timestamps (to avoid Y2038) issues, and that only the calls
+<code>lfs.sttributes</code>, <code>lfs.chdir</code>, 
+<code>lfs.currentdir</code>, <code>lfs.dir</code>, 
+<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
+<code>lfs.symlinkattributes</code> are included.
 
 <p><A HREF="#contents">Contents</A>
 
