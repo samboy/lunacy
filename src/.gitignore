@@ -1,0 +1,3 @@
+*.o
+liblua.a
+luac.exe

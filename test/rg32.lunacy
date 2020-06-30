@@ -1,0 +1,11 @@
+#!/usr/bin/env lunacy
+
+-- Since this uses lunacy's random API, it is *not* a Lua script
+
+seed = arg[1] or "12345"
+math.randomstrseed(seed)
+out = ""
+for a=1,16 do
+  out = out .. string.format("%04x",math.rand16()) 
+end
+print(seed, out)
