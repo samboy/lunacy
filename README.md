@@ -8,7 +8,7 @@ compiles and runs in Linux (CentOS 7 64-bit).
 
 # Lunacy changes from Lua 5.1
 
-* Lunacy is compiled as a tiny (107,520 byte) Windows 32-bit binary
+* Lunacy is compiled as a tiny (118,272 byte) Windows 32-bit binary
   which is (as of 2020) Windows XP and Windows 10 compatible.  This
   binary is in the `bin/` folder.
 * To make sure we don't have issues come January 19, 2038, `os.clock()`,
@@ -27,4 +27,7 @@ compiles and runs in Linux (CentOS 7 64-bit).
   (the seed can not have ASCII NULLs in it).  `math.randomstrseed()` should
   generate the same sequence of numbers for a given seed, regardless of
   the architecture, floating point representation, or byte order used.
-
+* This code does not support runtime loading of dynamic libraries.
+* The luafilesystem suite is built in.  Not everything works -- there
+  may be issues with shortcuts / symbolic links in Windows -- but basic
+  directory and file traversal work.

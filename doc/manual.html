@@ -486,6 +486,23 @@ use the new function <code>math.randomstrseed()</code> which takes
 a NULL-terminated string (<i>not</i> number) as a random seed (the seed 
 can not have ASCII NULLs in it).  
 
+<p>
+
+Lunacy also includes a built in version of the commonly used 
+luafilesystem suite.  Not everything works (I had issues with the
+Windows code in luafilesystem for sym links), but it allows
+basic directory traversal:
+
+<pre>
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+</pre>
+
+Calls also include <code>lfs.chdir()</code> and 
+<code>lfs.currentdir()</code>
+
 <p><A HREF="#contents">Contents</A>
 
 <h1>1 - <a name="1">Introduction</a></h1>
