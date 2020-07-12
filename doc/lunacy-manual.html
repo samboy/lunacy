@@ -13,7 +13,7 @@
 <hr>
 <h1>
 <a href="http://www.lua.org/"><img src="logo.gif" alt="" border="0"></a>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-07-07)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-07-10)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -106,6 +106,7 @@ Freely available under the terms of the
 <LI><A HREF="#5.7">5.7 &ndash; Input and Output Facilities</A>
 <LI><A HREF="#5.8">5.8 &ndash; Operating System Facilities</A>
 <LI><A HREF="#5.9">5.9 &ndash; The Debug Library</A>
+<LI><A HREF="#5.10">5.10 &ndash; Bitwise Operations</A>
 </UL>
 <P>
 <LI><A HREF="#6">6 &ndash; Lua Stand-alone</A>
@@ -154,6 +155,19 @@ Freely available under the terms of the
 <A HREF="#pdf-unpack">unpack</A><BR>
 <A HREF="#pdf-xpcall">xpcall</A><BR>
 <P>
+
+<A HREF="#pdf-bit32.arshift">bit32.arshift</A><BR>
+<A HREF="#pdf-bit32.band">bit32.band</A><BR>
+<A HREF="#pdf-bit32.bnot">bit32.bnot</A><BR>
+<A HREF="#pdf-bit32.bor">bit32.bor</A><BR>
+<A HREF="#pdf-bit32.btest">bit32.btest</A><BR>
+<A HREF="#pdf-bit32.bxor">bit32.bxor</A><BR>
+<A HREF="#pdf-bit32.extract">bit32.extract</A><BR>
+<A HREF="#pdf-bit32.lrotate">bit32.lrotate</A><BR>
+<A HREF="#pdf-bit32.lshift">bit32.lshift</A><BR>
+<A HREF="#pdf-bit32.replace">bit32.replace</A><BR>
+<A HREF="#pdf-bit32.rrotate">bit32.rrotate</A><BR>
+<A HREF="#pdf-bit32.rshift">bit32.rshift</A><BR>
 
 <A HREF="#pdf-coroutine.create">coroutine.create</A><BR>
 <A HREF="#pdf-coroutine.resume">coroutine.resume</A><BR>
@@ -508,6 +522,10 @@ Note that only the calls
 file attributes are <code>size</code>, <code>mode</code>, and
 <code>nlink</code>; other attributes return nonsense values in
 Windows or have Y2038 issues.
+
+<p>
+
+In addition, the bit32 lib has been back ported from Lua 5.2.
 
 <p><A HREF="#contents">Contents</A>
 
@@ -8904,6 +8922,228 @@ to start the traceback
 
 
 
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.10 &ndash; <a name="5.10">Bitwise Operations</a></h2>
+
+<p>
+This library provides bitwise operations.
+It provides all its functions inside the table <a name="pdf-bit32"><code>bit32</code></a>.  These operations have been back ported from Lua 5.2.
+
+
+<p>
+Unless otherwise stated,
+all functions accept numeric arguments in the range
+<em>(-2<sup>51</sup>,+2<sup>51</sup>)</em>;
+each argument is normalized to
+the remainder of its division by <em>2<sup>32</sup></em>
+and truncated to an integer (in some unspecified way),
+so that its final value falls in the range <em>[0,2<sup>32</sup> - 1]</em>.
+Similarly, all results are in the range <em>[0,2<sup>32</sup> - 1]</em>.
+Note that <code>bit32.bnot(0)</code> is <code>0xFFFFFFFF</code>,
+which is different from <code>-1</code>.
+
+
+<p>
+<hr><h3><a name="pdf-bit32.arshift"><code>bit32.arshift (x, disp)</code></a></h3>
+
+
+<p>
+Returns the number <code>x</code> shifted <code>disp</code> bits to the right.
+The number <code>disp</code> may be any representable integer.
+Negative displacements shift to the left.
+
+
+<p>
+This shift operation is what is called arithmetic shift.
+Vacant bits on the left are filled
+with copies of the higher bit of <code>x</code>;
+vacant bits on the right are filled with zeros.
+In particular,
+displacements with absolute values higher than 31
+result in zero or <code>0xFFFFFFFF</code> (all original bits are shifted out).
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.band"><code>bit32.band (&middot;&middot;&middot;)</code></a></h3>
+
+
+<p>
+Returns the bitwise <em>and</em> of its operands.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.bnot"><code>bit32.bnot (x)</code></a></h3>
+
+
+<p>
+Returns the bitwise negation of <code>x</code>.
+For any integer <code>x</code>,
+the following identity holds:
+
+<pre>
+     assert(bit32.bnot(x) == (-1 - x) % 2^32)
+</pre>
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.bor"><code>bit32.bor (&middot;&middot;&middot;)</code></a></h3>
+
+
+<p>
+Returns the bitwise <em>or</em> of its operands.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.btest"><code>bit32.btest (&middot;&middot;&middot;)</code></a></h3>
+
+
+<p>
+Returns a boolean signaling
+whether the bitwise <em>and</em> of its operands is different from zero.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.bxor"><code>bit32.bxor (&middot;&middot;&middot;)</code></a></h3>
+
+
+<p>
+Returns the bitwise <em>exclusive or</em> of its operands.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.extract"><code>bit32.extract (n, field [, width])</code></a></h3>
+
+
+<p>
+Returns the unsigned number formed by the bits
+<code>field</code> to <code>field + width - 1</code> from <code>n</code>.
+Bits are numbered from 0 (least significant) to 31 (most significant).
+All accessed bits must be in the range <em>[0, 31]</em>.
+
+
+<p>
+The default for <code>width</code> is 1.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.replace"><code>bit32.replace (n, v, field [, width])</code></a></h3>
+
+
+<p>
+Returns a copy of <code>n</code> with
+the bits <code>field</code> to <code>field + width - 1</code>
+replaced by the value <code>v</code>.
+See <a href="#pdf-bit32.extract"><code>bit32.extract</code></a> for details about <code>field</code> and <code>width</code>.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.lrotate"><code>bit32.lrotate (x, disp)</code></a></h3>
+
+
+<p>
+Returns the number <code>x</code> rotated <code>disp</code> bits to the left.
+The number <code>disp</code> may be any representable integer.
+
+
+<p>
+For any valid displacement,
+the following identity holds:
+
+<pre>
+     assert(bit32.lrotate(x, disp) == bit32.lrotate(x, disp % 32))
+</pre><p>
+In particular,
+negative displacements rotate to the right.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.lshift"><code>bit32.lshift (x, disp)</code></a></h3>
+
+
+<p>
+Returns the number <code>x</code> shifted <code>disp</code> bits to the left.
+The number <code>disp</code> may be any representable integer.
+Negative displacements shift to the right.
+In any direction, vacant bits are filled with zeros.
+In particular,
+displacements with absolute values higher than 31
+result in zero (all bits are shifted out).
+
+
+<p>
+For positive displacements,
+the following equality holds:
+
+<pre>
+     assert(bit32.lshift(b, disp) == (b * 2^disp) % 2^32)
+</pre>
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.rrotate"><code>bit32.rrotate (x, disp)</code></a></h3>
+
+
+<p>
+Returns the number <code>x</code> rotated <code>disp</code> bits to the right.
+The number <code>disp</code> may be any representable integer.
+
+
+<p>
+For any valid displacement,
+the following identity holds:
+
+<pre>
+     assert(bit32.rrotate(x, disp) == bit32.rrotate(x, disp % 32))
+</pre><p>
+In particular,
+negative displacements rotate to the left.
+
+
+
+
+<p>
+<hr><h3><a name="pdf-bit32.rshift"><code>bit32.rshift (x, disp)</code></a></h3>
+
+
+<p>
+Returns the number <code>x</code> shifted <code>disp</code> bits to the right.
+The number <code>disp</code> may be any representable integer.
+Negative displacements shift to the left.
+In any direction, vacant bits are filled with zeros.
+In particular,
+displacements with absolute values higher than 31
+result in zero (all bits are shifted out).
+
+
+<p>
+For positive displacements,
+the following equality holds:
+
+<pre>
+     assert(bit32.rshift(b, disp) == math.floor(b % 2^32 / 2^disp))
+</pre>
+
+<p>
+This shift operation is what is called logical shift.
 
 
 <p><A HREF="#contents">Contents</A>
