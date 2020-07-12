@@ -463,7 +463,7 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(118,272 byte) Windows 32-bit binary which is (as of 2020) Windows XP 
+(120,320 byte) Windows 32-bit binary which is (as of 2020) Windows XP 
 and Windows 10 compatible.  
 <p>
 
@@ -520,7 +520,10 @@ Windows or have Y2038 issues.
 
 <p>
 
-In addition, the bit32 lib has been back ported from Lua 5.2.
+In addition, the bit32 lib has been added.  Note that the bit32
+lib is currently unstable; its API and results may change in 
+future versions of Lunacy, and it is not 100% compatible with
+the bit32 lib in Lua 5.2+.
 
 <p><A HREF="#contents">Contents</A>
 
@@ -8925,6 +8928,14 @@ to start the traceback
 This library provides bitwise operations.
 It provides all its functions inside the table <a name="pdf-bit32"><code>bit32</code></a>.  These operations come from 
 https://github.com/LuaDist/bitlib/
+
+<p>
+
+Note that the bit32
+lib is currently unstable; its API and results may change in
+future versions of Lunacy, and it is not 100% compatible with
+the bit32 lib in Lua 5.2+.
+
 
 <p>
 <hr><h3><a name="pdf-bit32.arshift"><code>bit32.arshift (x, disp)</code></a></h3>
