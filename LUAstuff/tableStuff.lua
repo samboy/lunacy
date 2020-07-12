@@ -7,14 +7,40 @@
 --  I created this routine when I wanted to make a version of pairs()
 --  guaranteed to traverse a table in a (mostly) deterministic fashion.
 
-function sortedTableKeys(t)
+function sortedTableKeys(t, sortBy)
   local a = {}
   local b = 1
+  if not sortBy then
+    sortBy = function(y,z) return tostring(y) < tostring(z) end
+  end
   for k,_ in pairs(t) do -- pairs() use OK; will sort
     a[b] = k
     b = b + 1
   end
-  table.sort(a, function(y,z) return tostring(y) < tostring(z) end)
+  table.sort(a, sortBy)
+  return a
+end
+
+-- This works like sortedTableKeys(), but sorts based on the values
+-- in the table (which are assumed to be numbers); highest numbers come
+-- first.
+-- For example, if we have this
+-- a = {bar = 2, baz = 3, foo = 1}
+-- Then run sortedByRevValue on a, we will get
+-- {"baz", "bar", "foo"}, since "baz" has the highest value, "bar" has
+-- the second highest value, and "foo" has the lowest value.
+function sortedByRevValue(t)
+  local a = {}
+  local b = 1
+  local c = t
+  for k,_ in pairs(t) do
+    a[b] = k
+    b = b + 1
+  end
+  local function s(x, y)
+    return tonumber(c[x]) > tonumber(c[y])
+  end
+  table.sort(a, s)
   return a
 end
 
@@ -65,7 +91,14 @@ end
 -- a table in a sorted order, e.g. 
 -- someTable = {foo = "bar", bar = "hello" , aaa = "zzz", aab = "xyz" }
 -- for key, value in sPairs(someTable) do print(key, value) end
-function sPairs(t)
+-- The sorter, if present, is a pointer to a function.  This function
+-- takes the table t as an input, and returns a 1-indexed array (i.e.
+-- table with only ordered numeric keys) where the values are table keys
+-- (presumably sorted).
+-- For example, sPairs(t,sortedByRevValue) iterates through the table
+-- as per the value of each table element, reverse numeric sorted
+function sPairs(t, sorter)
+  if not sorter then sorter = sortedTableKeys end
   local function _tableIter(t, _)
     local k = t.s[t.i]
     local v
@@ -80,7 +113,7 @@ function sPairs(t)
     end
   end
   local tt = {}
-  tt.s = sortedTableKeys(t)
+  tt.s = sorter(t)
   tt.t = t
   tt.i = 1
   return _tableIter, tt, nil
