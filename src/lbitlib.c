@@ -75,7 +75,7 @@ typedef size_t lua_UInteger;
 #define MONADIC(name, op)                                       \
   static int bit_ ## name(lua_State *L) {                       \
     lua_Number f;                                               \
-    lua_pushinteger(L, BIT_TRUNCATE(op TOBIT(L, 1, f)));        \
+    lua_pushnumber(L, BIT_TRUNCATE(op TOBIT(L, 1, f)));         \
     return 1;                                                   \
   }
 
