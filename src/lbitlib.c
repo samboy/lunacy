@@ -56,8 +56,7 @@ typedef size_t lua_UInteger;
 #endif
 
 
-#define BIT_TRUNCATE(i)                         \
-  ((i) & BIT_UMAX)
+#define BIT_TRUNCATE(i) ((i) & 0xffffffff)
 
 
 /* Operations
