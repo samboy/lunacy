@@ -1,10 +1,12 @@
 /* Bitwise operations library */
 /* (c) Reuben Thomas 2000-2008 */
+/* (c) Sam Trenholme 2020 */
 /* See README.bitlib for license */
 
 #include "lua.h"
 #include "lauxlib.h"
 #include <limits.h>
+#include <stdint.h>
 
 #include "bit_limits.h"
 
@@ -84,32 +86,44 @@ typedef size_t lua_UInteger;
     lua_Integer w = TOBIT(L, 1, f);             \
     for (i = 2; i <= n; i++)                    \
       w op TOBIT(L, i, f);                      \
-    lua_pushinteger(L, BIT_TRUNCATE(w));        \
+    lua_pushnumber(L, BIT_TRUNCATE(w));         \
     return 1;                                   \
   }
 
 #define LOGICAL_SHIFT(name, op)                                         \
   static int bit_ ## name(lua_State *L) {                               \
     lua_Number f;                                                       \
-    lua_pushinteger(L, BIT_TRUNCATE(BIT_TRUNCATE((lua_UInteger)TOBIT(L, 1, f)) op \
-                                    (unsigned)luaL_checknumber(L, 2))); \
+    int z = (unsigned)luaL_checknumber(L, 2); if(z>31) { \
+    lua_pushnumber(L, 0); } else { \
+    lua_pushnumber(L, BIT_TRUNCATE(BIT_TRUNCATE((lua_UInteger)TOBIT(L, 1, f)) op \
+                                    (unsigned)luaL_checknumber(L, 2))); } \
     return 1;                                                           \
   }
 
 #define ARITHMETIC_SHIFT(name, op)                                      \
   static int bit_ ## name(lua_State *L) {                               \
     lua_Number f;                                                       \
-    lua_pushinteger(L, BIT_TRUNCATE((lua_Integer)TOBIT(L, 1, f) op      \
+    lua_pushnumber(L, BIT_TRUNCATE((lua_Integer)TOBIT(L, 1, f) op       \
                                     (unsigned)luaL_checknumber(L, 2))); \
     return 1;                                                           \
   }
 
+static int bit32_rrotate(lua_State *L) {
+    uint32_t f;
+    uint32_t r;
+    f = (uint32_t)luaL_checknumber(L, 1);
+    r = (uint32_t)luaL_checknumber(L, 2);
+    r &= 31;
+    lua_pushnumber(L, (lua_Number)((f >> r) | (f << (32 - r))));
+    return 1;
+}
+    
 MONADIC(cast,  +)
 MONADIC(bnot,  ~)
 VARIADIC(band, &=)
 VARIADIC(bor,  |=)
 VARIADIC(bxor, ^=)
-ARITHMETIC_SHIFT(lshift,  <<)
+LOGICAL_SHIFT(lshift,  <<)
 LOGICAL_SHIFT(rshift,     >>)
 ARITHMETIC_SHIFT(arshift, >>)
 
@@ -122,6 +136,7 @@ static const struct luaL_reg bitlib[] = {
   {"lshift",  bit_lshift},
   {"rshift",  bit_rshift},
   {"arshift", bit_arshift},
+  {"rrotate", bit32_rrotate},
   {NULL, NULL}
 };
 
