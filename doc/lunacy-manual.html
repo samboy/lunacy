@@ -13,7 +13,7 @@
 <hr>
 <h1>
 <a href="http://www.lua.org/"><img src="logo.gif" alt="" border="0"></a>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-07-10)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-07-12)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -156,7 +156,7 @@ Freely available under the terms of the
 <A HREF="#pdf-xpcall">xpcall</A><BR>
 <P>
 
-<A HREF="#pdf-bit32.barshift">bit32.barshift</A><BR>
+<A HREF="#pdf-bit32.arshift">bit32.arshift</A><BR>
 <A HREF="#pdf-bit32.band">bit32.band</A><BR>
 <A HREF="#pdf-bit32.bnot">bit32.bnot</A><BR>
 <A HREF="#pdf-bit32.bor">bit32.bor</A><BR>
@@ -524,8 +524,21 @@ Windows or have Y2038 issues.
 
 In addition, some of the bit32 lib has been added.  Note that the bit32
 lib is currently unstable; its API and results may change in 
-future versions of Lunacy, and it is not 100% compatible with
-the bit32 lib in Lua 5.2+.
+future versions of Lunacy, and it may not be 100% compatible with
+the bit32 lib in Lua 5.2+.  Its goal is Lua 5.2+ bit32
+compatibility.
+
+<p>
+
+Right now:
+
+<p>
+
+<code>= bit32.arshift(-1,1) -- returns 4294967295</code><p>
+<code>= bit32.bnot(0) -- returns 4294967295</code><p>
+<code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
+<code>= bit32.lshift(1,32) -- returns 0</code><p>
+<code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
 
 <p><A HREF="#contents">Contents</A>
 
@@ -8935,14 +8948,32 @@ https://github.com/LuaDist/bitlib/
 
 Note that the bit32
 lib is currently unstable; its API and results may change in
-future versions of Lunacy, and it is not 100% compatible with
+future versions of Lunacy, and may not be 100% compatible with
 the bit32 lib in Lua 5.2+.  Its goal is to be Lua 5.2+ compatible.
 
 <p>
+
+Some examples:
+
+<p>
+
+<code>= bit32.arshift(-1,1) -- returns 4294967295</code><p>
+<code>= bit32.bnot(0) -- returns 4294967295</code><p>
+<code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
+<code>= bit32.lshift(1,32) -- returns 0</code><p>
+<code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
+
 <hr><h3><a name="pdf-bit32.arshift"><code>bit32.arshift (x, disp)</code></a></h3>
 
 <p>
 Returns the number <code>x</code> shifted <code>disp</code> bits to the right.
+
+<p>
+If the number would be a negative 32-bit integer, we put binary '1' in
+the high-order bits.  Otherwise, we put in binary '0'.  For example
+<code>0xfffffff0</code> shifted four bits to the right is 
+<code>0xffffffff</code>.  <code>0x7fffffff</code> shifted four bits to
+the right is <code>0x07ffffff</code>.
 
 <p>
 <hr><h3><a name="pdf-bit32.band"><code>bit32.band (&middot;&middot;&middot;)</code></a></h3>
@@ -8959,7 +8990,7 @@ Returns the bitwise <em>and</em> of its operands.
 
 
 <p>
-Returns the bitwise negation of <code>x</code>.
+Returns the bitwise negation of <code>x</code>. 
 
 
 <p>
@@ -9000,11 +9031,18 @@ Returns the number <code>x</code> shifted <code>disp</code> bits to the right.
 This shift operation is what is called logical shift.
 
 <p>
+We always put in binary '0' with the high order bits.  For example
+<code>0xfffffff0</code> shifted four bits to the right is 
+<code>0x0fffffff</code>.  <code>0x7fffffff</code> shifted four bits to
+the right is <code>0x07ffffff</code>.
+
+<p>
 <hr><h3><a name="pdf-bit32.rrotate"><code>bit32.rrotate (x, disp)</code></a></h3>
 
 
 <p>
 Returns the number <code>x</code> rotated <code>disp</code> bits to the right.
+This is a 32-bit rotate.
 
 <p><A HREF="#contents">Contents</A>
 
