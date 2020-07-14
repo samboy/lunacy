@@ -85,6 +85,37 @@ function tablePrint(t, prefix, seen)
   end
 end
 
+----------------------- tableCopyD(t) -----------------------
+-- Input: Table with no duplicate references (sub-tables are OK, but
+-- there must be no "hard link" tables; if there are, we only copy
+-- one of the hard link tables)
+-- The second argument is a table, where the keys are table pointers,
+-- which lists tables we have already seen or copied
+-- Output: Copy of table
+-- example usage:
+-- foo = {a = 1, b = 2, c = {d = 3, f = 4}}
+-- print(foo.c.d) -- 3
+-- bar = tableCopyD(foo)
+-- print(bar.c.d) -- also 3
+-- bar.c.d = 5
+-- print(foo.c.d) -- still 3
+-- print(bar.c.d) -- now 5
+function tableCopyD(t, seen)
+  if not seen then seen = {} end
+  local out = {}
+  seen[t] = true
+  for k, v in pairs(t) do
+    if type(v) == "table" then
+      if not seen[v] then
+        out[k] = tableCopyD(v, seen)
+      end
+    else
+      out[k] = v
+    end
+  end
+  return out
+end
+
 ----------------------- sPairs(t) -----------------------
 -- Input: Table
 -- Ouput: Iterator used by "for" which will go through the keys in
