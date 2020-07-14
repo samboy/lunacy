@@ -100,7 +100,7 @@ end
 -- bar.c.d = 5
 -- print(foo.c.d) -- still 3
 -- print(bar.c.d) -- now 5
-function tableCopyD(t, seen)
+function tableCopyD(t, seen) 
   if not seen then seen = {} end
   local out = {}
   seen[t] = true
@@ -115,6 +115,29 @@ function tableCopyD(t, seen)
   end
   return out
 end
+
+----------------------- tableCopyR(t) -----------------------
+-- This is like tableCopyD, but it does the right thing when there are
+-- multiple "hard links" to the same table (it makes multiple links to a
+-- copy of the source table)
+function tableCopyR(t, seen) 
+  if not seen then seen = {} end
+  local out = {}
+  seen[t] = out
+  for k, v in pairs(t) do
+    if type(v) == "table" then
+      if not seen[v] then
+        out[k] = tableCopyR(v, seen)
+      else
+        out[k] = seen[v]
+      end
+    else
+      out[k] = v
+    end
+  end
+  return out
+end
+
 
 ----------------------- sPairs(t) -----------------------
 -- Input: Table
