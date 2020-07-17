@@ -95,10 +95,13 @@ end
 function humanNumber(n, separator, fmt)
   if not fmt then fmt = "%.2f" end
   if not separator then separator = "," end -- I am in the US
-  if n < 0 then return "ERROR" end
   local out = ""
+  if n < 0 then 
+    out = "-" 
+    n = -n 
+  end
   local parts = {}
-  if n < 1000 then return string.format(fmt, n) end
+  if n < 1000 then return out .. string.format(fmt, n) end
   low = n % 1000
   n = math.floor(n / 1000)
   while n > 0 do
@@ -106,7 +109,7 @@ function humanNumber(n, separator, fmt)
     n = math.floor(n / 1000)
   end
   for i = #parts, 1, -1 do
-    if i == #parts then out = tostring(parts[i])
+    if i == #parts then out = out .. tostring(parts[i])
     else out = out .. separator .. string.format("%03d",parts[i]) end
   end
   out = out .. separator
