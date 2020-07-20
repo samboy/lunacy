@@ -1,16 +1,25 @@
 body {
 	color: #000000 ;
 	background-color: #FFFFFF ;
-	font-family: Helvetica, Arial, sans-serif ;
-	text-align: justify ;
+	font-family: Caulixtla009Serif, Helvetica, Arial, sans-serif ;
+	text-align: left ;
 	margin-right: 30px ;
 	margin-left: 30px ;
+        font-size: 18px;
 }
 
-h1, h2, h3, h4 {
-	font-family: Verdana, Geneva, sans-serif ;
-	font-weight: normal ;
+code { font-family: Caulixtla009Mono, monospace; font-size: 16px; }
+tt { font-family: Caulixtla009Mono, monospace; font-size: 16px;}
+
+h1, h2 {
+	font-family: Caulixtla009Sans, Verdana, Geneva, sans-serif ;
+	font-weight: bold ;
 	font-style: italic ;
+}
+h3, h4 {
+	font-family: Caulixtla009Sans, Verdana, Geneva, sans-serif ;
+	font-weight: bold ;
+	font-style: none ;
 }
 
 h2 {
