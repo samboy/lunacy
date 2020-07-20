@@ -484,18 +484,13 @@ To make sure we don't have issues come January 19, 2038,
 quality random numbers.  There is now <code>math.rand16()</code>, which 
 generates 16-bit random numbers; <code>math.random()</code> works as
 usual.
-<code>math.randomseed()</code> is here, accepts any floating point
-number, but is not guaranteed to generate the same numbers across
-different platforms.  On a little endian system with 64-bit IEEE-754
-floating point numbers, <code>math.randomseed(1)</code> followed by
-<code>math.rand16()</code> will generate the number 9170 (<code>23d2</code>
-in hex).  
-<p>
-
-If one wishes to have numbers consistent across different architectures,
-use the new function <code>math.randomstrseed()</code> which takes 
-a NULL-terminated string (<i>not</i> number) as a random seed (the seed 
-can not have ASCII NULLs in it).  
+<code>math.randomseed()</code> is here, but it now is designed
+to accept strings as the seed.  However, since Lua has built-in
+coercion, <code>randomseed</code> will also accept a number for
+the seed: Lua converts the number in to a string before having it
+seed RadioGatun's state.  Note that a seed can not have the NUL
+character; if it does, the string is truncated at the NUL 
+character.
 
 <p>
 
@@ -8024,21 +8019,7 @@ pseudo-random numbers between 0 and 65535.
 
 Sets <code>x</code> as the "seed"
 for the pseudo-random generator:
-equal seeds produce equal sequences of numbers.  Note that the sequence
-of numbers may vary depending on the architecture used to run the code or
-the endian byte order used.  If a sequence of numbers which is the same
-across various systems is needed, use
-<code>math.randomstrseed</code> instead.
-
-
-<p>
-<hr><h3><a name="pdf-math.randomstrseed"><code>math.randomstrseed (x)</code></a></h3>
-
-
-<p>
-Sets <code>x</code> as the "seed"
-for the pseudo-random generator:
-equal seeds produce equal sequences of numbers.
+equal seeds produce equal sequences of numbers.  
 
 <p>
 
@@ -8046,6 +8027,12 @@ Note that the value x is a <i>string</i>, not a number.
 The string is a text, not binary, string: The seed can
 not have ASCII NULLs in it; any other character (including
 UTF-8 hi-bit characters) is allowed.
+
+<p>
+
+If a number is given to <code>randomseed</code>, Lua
+converts the number in to a string before seeding
+the random state.
 
 <p>
 <hr><h3><a name="pdf-math.sin"><code>math.sin (x)</code></a></h3>
