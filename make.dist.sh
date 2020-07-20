@@ -4,10 +4,12 @@ rm -fr lunacy-dist/
 mkdir lunacy-dist/
 cp bin/lunacy.exe lunacy-dist/
 cp doc/lunacy-manual.html lunacy-dist/
+cp doc/*css lunacy-dist/
 mkdir lunacy-dist/examples/
 cp test/*lua lunacy-dist/examples
 mkdir lunacy-dist/LUAstuff
 cp LUAstuff/* lunacy-dist/LUAstuff/
+rm lunacy-dist/LUAstuff/rg32*
 cp COPYING lunacy-dist/COPYING.txt
 cp README.md lunacy-dist/README.txt
 unix2dos lunacy-dist/COPYING.txt
