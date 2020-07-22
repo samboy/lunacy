@@ -17,16 +17,11 @@ compiles and runs in Linux (CentOS 7 64-bit).
    have headaches come 2038).
 * `math.random()` uses RadioGatún[32] instead of `rand()` to get higher
   quality random numbers.  `math.random()` works as usual, but there is
-  now `math.rand16()`, which generates 16-bit random
-  numbers (i.e. a random integer between 0 and 65,535). 
-  `math.randomseed()` is here, accepts any floating point number,
-  but may generate different sequences on 
-  systems with different byte orders or floating point representations.
-  We have also added `math.randomstrseed()` 
-  which takes a NULL-terminated string (*not* number) as a random seed 
-  (the seed can not have ASCII NULLs in it).  `math.randomstrseed()` should
-  generate the same sequence of numbers for a given seed, regardless of
-  the architecture, floating point representation, or byte order used.
+  now `math.rand16()`, which generates 16-bit random numbers (i.e. a 
+  random integer between 0 and 65,535).  `math.randomseed()` takes a 
+  NULL-terminated string (*not* number) as a random seed (the seed can 
+  not have ASCII NULLs in it).  If a number is given to 
+  `math.randomseed()`, Lua’s coercion converts it in to a string.
 * This code does not support runtime loading of dynamic libraries.
 * The luafilesystem suite is built in.  Not everything works, but basic
   directory and file traversal are present.
