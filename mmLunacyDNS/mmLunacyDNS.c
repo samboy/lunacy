@@ -114,7 +114,7 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
 }
 
 lua_State *init_lua(char *fileName) {
-	char useFilename[32];
+	char useFilename[512];
 	lua_State *L = luaL_newstate(); // Initialize Lua
 	/* The filename we use is {executable name}.lua.  
          * {executable name} is the name this is being called as,
@@ -125,9 +125,16 @@ lua_State *init_lua(char *fileName) {
          */
 	if(fileName != NULL && *fileName != 0) {
 		int a;
-		for(a = 0; a < 23; a++) {
+		int lastDot = 505;
+		// Find the final '.' in the executable name
+		for(a = 0; a < 500; a++) {
+			if(fileName[a] == '.') {
+				lastDot = a;
+			}
+		}
+		for(a = 0; a < 500; a++) {
 			useFilename[a] = *fileName;
-			if(*fileName == 0 || (*fileName == '.' && a > 0)) {
+			if(*fileName == 0 || a >= lastDot) {
 				break;
 			}
 			fileName++;
@@ -167,9 +174,20 @@ int main(int argc, char **argv) {
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
         int leni = sizeof(struct sockaddr);
+	lua_State *L;
 
 	// Get bindIp and returnIp from Lua script
-	lua_State *L = init_lua(argv[0]); // Initialize Lua
+	if(argc == 1) {
+		L = init_lua(argv[0]); // Initialize Lua
+	} else if(argc == 3) {
+		char *look = argv[1];
+		if(look[0] == '-' && look[1] == 'f' && look[2] == 0) {
+			L = init_lua(argv[2]); // Initialize Lua
+		}
+	} else {
+		log_it("Usage: mmLunacyDNS -f {config file}");
+		return 1;
+	}
 	if(L == NULL) {
 		log_it("Fatal error opening lua config file");
 		return 1;
