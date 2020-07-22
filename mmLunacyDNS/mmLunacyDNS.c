@@ -42,6 +42,13 @@
 /* We use a special SOCKET type for easier Windows porting */
 #define SOCKET int
 
+/* Log a message */
+void log_it(char *message) {
+	if(message != NULL) {
+		puts(message);
+	}
+}
+
 /* This is the header placed before the 4-byte IP; we change the last four
  * bytes to set the IP we give out in replies */
 char p[17] =
@@ -49,7 +56,6 @@ char p[17] =
 
 /* Set the IP we send in response to DNS queries */
 uint32_t set_return_ip(char *returnIp) {
-
         uint32_t ip;
 
 	if(returnIp == NULL) {
@@ -107,11 +113,50 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         return sock;
 }
 
-/* Log a message */
-void log_it(char *message) {
-	if(message != NULL) {
-		puts(message);
+lua_State *init_lua(char *fileName) {
+	char useFilename[32];
+	lua_State *L = luaL_newstate(); // Initialize Lua
+	/* The filename we use is {executable name}.lua.  
+         * {executable name} is the name this is being called as,
+         * usually mmLunacyDNS (or mmLunacyDNS.exe in Windows).
+         * This way, if we want multiple Lua configuration files for
+         * different use cases, we simple copy the binary (or link
+         * to it) to make it use a different .lua configuration file.
+         */
+	if(fileName != NULL && *fileName != 0) {
+		int a;
+		for(a = 0; a < 23; a++) {
+			useFilename[a] = *fileName;
+			if(*fileName == 0 || (*fileName == '.' && a > 0)) {
+				break;
+			}
+			fileName++;
+		}
+		useFilename[a] = '.'; a++;
+		useFilename[a] = 'l'; a++;
+		useFilename[a] = 'u'; a++;
+		useFilename[a] = 'a'; a++;
+		useFilename[a] = 0;
+	} else {
+		// Yes, it is possible to make argv[0] null
+		strcpy(useFilename,"mmLunacyDNS.lua");
 	}
+
+	// Open and parse the .lua file
+	if(luaL_loadfile(L, useFilename) == 0) {
+		if(lua_pcall(L, 0, 0, 0) != 0) {
+			log_it("Unable to parse lua file with name:");
+			log_it(useFilename);
+			log_it((char *)lua_tostring(L,-1));
+			return NULL;
+		}		
+	} else {
+		log_it("Unable to open lua file with name:");
+		log_it(useFilename);
+		log_it((char *)lua_tostring(L,-1));
+		return NULL;
+	}
+	return L;
 }
 
 int main(int argc, char **argv) {
@@ -124,18 +169,9 @@ int main(int argc, char **argv) {
         int leni = sizeof(struct sockaddr);
 
 	// Get bindIp and returnIp from Lua script
-	lua_State *L = luaL_newstate(); // Initialize Lua
-
-	// Open and parse mmLunacyDNS.lua
-	if(luaL_loadfile(L, "mmLunacyDNS.lua") == 0) {
-		if(lua_pcall(L, 0, 0, 0) != 0) {
-			log_it("Unable to parse mmLunacyDNS.lua");
-			log_it(lua_tostring(L,-1));
-			return 1;
-		}		
-	} else {
-		log_it("Unable to open mmLunacyDNS.lua");
-		log_it(lua_tostring(L,-1));
+	lua_State *L = init_lua(argv[0]); // Initialize Lua
+	if(L == NULL) {
+		log_it("Fatal error opening lua config file");
 		return 1;
 	}
 
@@ -143,7 +179,7 @@ int main(int argc, char **argv) {
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
         if(lua_type(L, -1) == LUA_TSTRING) {
 		char *bindIp;
-		bindIp = lua_tostring(L, -1); 
+		bindIp = (char *)lua_tostring(L, -1); 
 		ip = get_ip(bindIp);
 	} else {
 		log_it("Unable to get bindIp; using 0.0.0.0");
@@ -154,7 +190,7 @@ int main(int argc, char **argv) {
         lua_getglobal(L,"returnIp"); // Push "bindIp" on to stack
         if(lua_type(L, -1) == LUA_TSTRING) {
 		char *returnIp;
-		returnIp = lua_tostring(L, -1); 
+		returnIp = (char *)lua_tostring(L, -1); 
 		set_return_ip(returnIp);
 	} else {
 		log_it("Unable to get returnIp; using 127.0.0.1");

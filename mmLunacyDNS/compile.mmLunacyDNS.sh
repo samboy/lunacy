@@ -5,5 +5,5 @@
 cd ..
 make 
 cd mmLunacyDNS
-gcc -c -o mmLunacyDNS.o mmLunacyDNS.c
-gcc -o mmLunacyDNS mmLunacyDNS.o ../src/liblua.a -lm
+gcc -Os -c -o mmLunacyDNS.o mmLunacyDNS.c
+gcc -Os -o mmLunacyDNS mmLunacyDNS.o ../src/liblua.a -lm
