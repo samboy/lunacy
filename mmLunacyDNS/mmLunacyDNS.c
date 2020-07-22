@@ -183,6 +183,9 @@ int main(int argc, char **argv) {
 		char *look = argv[1];
 		if(look[0] == '-' && look[1] == 'f' && look[2] == 0) {
 			L = init_lua(argv[2]); // Initialize Lua
+		} else {
+			log_it("Usage: mmLunacyDNS -f {config file}");
+			return 1;
 		}
 	} else {
 		log_it("Usage: mmLunacyDNS -f {config file}");
