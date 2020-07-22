@@ -53,4 +53,7 @@ Some other languages based on Lua:
 * https://github.com/SquidDev/urn Another Lisp variant that compiles to Lua
 * https://github.com/teal-language/tl/ Strongly typed Lua variant 
 * https://github.com/LiXizhi/NPLRuntime Neural Parallel Language
-* https://github.com/hengestone/lua-languages Another list of Lua-like languages
+* https://github.com/hengestone/lua-languages Another list of Lua-like 
+  languages
+* https://github.com/presidentbeef/brat Semi-esoteric language which compiles
+  to Lua
