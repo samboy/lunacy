@@ -1,7 +1,7 @@
-Lunacy is a fork of Lua 5.1.5 (why 5.1?  Because it's about 20% smaller than
-Lua 5.3 and because there's a lot of places stuck at Lua 5.1 -- can you 
-say Roblox? -- this is a good "baseline" version of Lua) designed to
-be a tiny yet powerful stand alone scripting language.
+Lunacy is a fork of Lua 5.1.5 (why 5.1?  Because it's about 20% smaller
+than Lua 5.3 and because there’s a lot of code based on Lua 5.1: Roblox
+Luau, LuaJIT, Gopher Lua, Adobe Lightroom Classic, etc.) designed to be
+a tiny yet powerful stand alone scripting language.
 
 This is designed to be compiled as a tiny Windows binary, but it also
 compiles and runs in Linux (CentOS 7 64-bit).
@@ -52,3 +52,16 @@ Some other languages based on Lua:
   languages
 * https://github.com/presidentbeef/brat Semi-esoteric language which compiles
   to Lua
+
+# LuaJIT
+
+LuaJIT is a high performance implementation of Lua 5.1.
+
+* https://github.com/LuaJIT/LuaJIT
+
+Since development for LuaJIT has slowed down,
+there are some forks of it:
+
+* https://github.com/moonjit/moonjit/
+* https://github.com/raptorjit/raptorjit
+ 
