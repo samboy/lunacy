@@ -293,18 +293,6 @@ int main(int argc, char **argv) {
 	}
 	lua_pop(L, 1); // Remove result from stack, restoring the stack
 
-	// Get returnIp from the Lua program	
-        lua_getglobal(L,"returnIp"); // Push "bindIp" on to stack
-        if(lua_type(L, -1) == LUA_TSTRING) {
-		char *returnIp;
-		returnIp = (char *)lua_tostring(L, -1); 
-		set_return_ip(returnIp);
-	} else {
-		log_it("Unable to get returnIp; using 127.0.0.1");
-		set_return_ip("127.0.0.1");
-	}
-	lua_pop(L, 1); // Remove result from stack, restoring the stack
-
         sock = get_port(ip,&dns_udp);
 
 	log_it("Running mmLunacyDNS");
