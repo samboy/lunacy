@@ -184,6 +184,62 @@ lua_State *init_lua(char *fileName) {
 	return L;
 }
 
+/* Convert a raw over-the-wire DNS name (in) in to a human-readable
+ * name.  Anything that is not [A-Za-z0-9\-\_] is converted in to {hex}
+ * where "hex" is a hex number 
+ */
+int humanDNSname(char *in, char *out, int max) {
+	int labelLen = 0;
+	int inPoint = 0;
+	int outPoint = 0;
+	labelLen = in[inPoint];
+	while(labelLen > 0) {
+		char see = 0;
+		if(inPoint >= max || outPoint >= max) {
+			return -1;
+		}
+		inPoint++;
+		see = in[inPoint];
+		if((see >= '0' && see <= '9') ||
+                   (see >= 'a' && see <= 'z') ||
+                   (see >= 'A' && see <= 'Z') ||
+		    see == '-' || see == '_') {
+			if(outPoint >= max) {return -1;}
+			out[outPoint] = see;
+			outPoint++;
+		} else { // Hex escape of anything not "safe"
+			int left = (see >> 4) & 15;
+			int right = see & 15;
+			if(outPoint + 5 >= max) {return -1;}
+			out[outPoint] = '{'; outPoint++;
+			if(left < 10) {
+				out[outPoint] = '0' + left;
+			} else {
+				out[outPoint] = 'a' + (left - 10);
+			}
+			outPoint++;
+			if(right < 10) {
+				out[outPoint] = '0' + right;
+			} else {
+				out[outPoint] = 'a' + (right - 10);
+			}
+			outPoint++;
+			out[outPoint] = '}'; outPoint++;
+		}
+		labelLen--;
+		if(labelLen == 0) {
+			inPoint++;
+			labelLen = in[inPoint];
+			if(outPoint >= max) {return -1;}
+			out[outPoint] = '.';
+			outPoint++;
+		}
+	}
+	if(outPoint >= max) {return -1;}
+	out[outPoint] = 0;
+	return inPoint;
+}
+	
 int main(int argc, char **argv) {
         int a, len_inet;
         SOCKET sock;
@@ -244,6 +300,7 @@ int main(int argc, char **argv) {
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
         for(;;) {
+		char query[500];
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
                         &foo);
@@ -253,26 +310,33 @@ int main(int argc, char **argv) {
                 }
 
                 /* Prepare the reply */
-                if(len_inet > 12) {
+                if(len_inet > 12 && in[5] == 1) {
                         /* Make this an answer */
                         in[2] |= 0x80;
-                        if(in[11] == 0) { /* EDNS not supported */
-                                /* We add an additional answer */
-                                in[7]++;
-                        } else {
-                                in[3] &= 0xf0; in[3] |= 4; /* NOTIMPL */
-                        }
+                        in[7]++;
+			in[11] = 0; // Ignore EDNS
                 }
-                if(in[11] == 0) { /* Again, EDNS not supported */
-                        for(a=0;a<16;a++) {
-                                in[len_inet + a] = p[a];
-                        }
-                }
+	 	if(humanDNSname(in + 12, query, 490) != -1) {
+			lua_getglobal(L, "processQuery");
+			lua_pushstring(L,query);
+			if (lua_pcall(L, 1, 1, 0) == 0) {
+				const char *res;
+				res = luaL_checkstring(L, -1);		
+				if(res != NULL) {
+					set_return_ip(res);
+                			for(a=0;a<16;a++) {
+                        			in[len_inet + a] = p[a];
+                			}
 
-                /* Send the reply */
-                sendto(sock,in,len_inet + 16,0, (struct sockaddr *)&dns_udp,
-                        leni);
+                			/* Send the reply */
+                			sendto(sock,in,len_inet + 16,0, 
+					    (struct sockaddr *)&dns_udp, leni);
+				}
+			} else {
+				log_it("Error calling function processQuery");
+				log_it(lua_tostring(L, -1));
+			}
+		}
         }
-
 }
 
