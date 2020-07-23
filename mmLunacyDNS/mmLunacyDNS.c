@@ -431,20 +431,34 @@ void runServer(lua_State *L) {
 #ifndef MINGW
 int main(int argc, char **argv) {
 	lua_State *L;
+	char *look;
 
 	// Get bindIp and returnIp from Lua script
 	if(argc == 1) {
+		log_it("Only debug (interactive) mode supported.");
+		log_it("Running as a daemon not supported yet.");
+		log_it("Usage: mmLunacyDNS -d {config file}");
+		return 1;
+	} 
+        look = argv[1];
+	if(look == 0) {
+		log_it("Error getting command line args.");
+		return 1;
+	}
+	if(look[0] != '-' || look[1] != 'd') {
+		log_it("Only debug (interactive) mode supported.");
+		log_it("Running as a daemon not supported yet.");
+		log_it("Usage: mmLunacyDNS -d {config file}");
+		return 1;
+	} 
+        if(argc == 2) {
 		L = init_lua(argv[0]); // Initialize Lua
 	} else if(argc == 3) {
-		char *look = argv[1];
-		if(look[0] == '-' && look[1] == 'f' && look[2] == 0) {
-			L = init_lua(argv[2]); // Initialize Lua
-		} else {
-			log_it("Usage: mmLunacyDNS -f {config file}");
-			return 1;
-		}
+		L = init_lua(argv[2]); // Initialize Lua
 	} else {
-		log_it("Usage: mmLunacyDNS -f {config file}");
+		log_it("Only debug (interactive) mode supported.");
+		log_it("Running as a daemon not supported yet.");
+		log_it("Usage: mmLunacyDNS -d {config file}");
 		return 1;
 	}
 	if(L == NULL) {
@@ -656,14 +670,14 @@ int main(int argc, char **argv) {
                 for(a=0;a<5 && *b;a++) {
                         if(*b == 'r') { /* --remove */
                                 action = 1;
-                        } else if(*b == 'd') { /* --nodaemon */
+                        } else if(*b == 'd') { /* --nodaemon or -d */
                                 action = 2;
                         }
                         b++;
                 }
                 if(action == 1) { /* --remove */
                         svc_remove_service();
-                } else if(action == 2) { /* --nodaemon */
+                } else if(action == 2) { /* --nodaemon or -d */
 			lua_State *L;
 			isInteractive = 1;
 			L = init_lua(argv[0]);

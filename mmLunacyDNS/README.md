@@ -7,16 +7,25 @@ It uses, as a Lua configuration file, `mmLunacyDNS.lua` by default.
 It is possible to use a different config file by either:
 
 * Renaming the `mmLunacyDNS` binary to another name.
-* By specifying a config file with the `-f` option:
+* By specifying a config file with the `-d` option:
 
 ```
-	mmLunacyDNS -f /etc/mmLunacyDNS.lua
+	mmLunacyDNS -d /etc/mmLunacyDNS.lua
 ```
 
-Note that the configuration file *must* have the suffix `.lua`.  
+Here, the `-d` option means "debug": Do not run `mmLunacyDNS` as a 
+daemon.  Right now, `mmLunacyDNS` does not have built-in daemonization
+support, so it *must* have the `-d` option to run.  If one is using the
+`mmLunacyDNS.lua` file in the same location as the `mmLunacyDNS` binary
+as the configuration file, it can be run as follows:
 
-The configuration file is tells mmLunacyDNS the IP to bind to, and
-has a Lua function which is called every time a DNS query is received.
+```
+	mmLunacyDNS -d
+```
+
+The configuration file, which *always* has the suffix `.lua`, tells
+mmLunacyDNS the IP to bind to, and has a Lua function which is called
+every time a DNS query is received.
 
 The script `compile.mmLunacyDNS.sh` compiles mmLunacyDNS and links it
 to Lunacy (Lua).
@@ -24,14 +33,14 @@ to Lunacy (Lua).
 `mmLunacyDNS` currently has no UNIX/BSD/Linux daemonization support (but
 it can be made a daemon with `Duende` included with MaraDNS).  It does, 
 however, install and run as a Windows service; a binary is in the
-top-level `bin/` folder.
+top-level `bin/` folder (see the "Windows binary" section below).
 
 # Configuration file format
 
 mmLunacyDNS uses a Lua script as a configuration file.
 
-From that file, it gets the string bindIp, which is the IP 
-mmLunacyDNS binds to.
+From that file, it gets the string `bindIp`, which is the IP 
+mmLunacyDNS binds to.  `bindIp` is a top-level global variable.
 
 Once it binds to the IP, every time mmLunacyDNS gets a query, it
 runs the lua function processQuery, which takes as its input a
