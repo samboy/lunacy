@@ -320,10 +320,19 @@ int main(int argc, char **argv) {
 			lua_getglobal(L, "processQuery");
 			lua_pushstring(L,query);
 			if (lua_pcall(L, 1, 1, 0) == 0) {
-				const char *res;
-				res = luaL_checkstring(L, -1);		
-				if(res != NULL) {
-					set_return_ip((char *)res);
+				const char *rs;
+				// Pull mmType from return table
+				lua_getfield(L, -1, "mm1Type");
+				rs = luaL_checkstring(L, -1);
+				if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
+					lua_pop(L, 1); 
+					lua_getfield(L, -1, "mm1Data");
+					rs = luaL_checkstring(L, -1);		
+				} else {
+					rs = NULL;
+				}
+				if(rs != NULL) {
+					set_return_ip((char *)rs);
                 			for(a=0;a<16;a++) {
                         			in[len_inet + a] = p[a];
                 			}
@@ -332,6 +341,8 @@ int main(int argc, char **argv) {
                 			sendto(sock,in,len_inet + 16,0, 
 					    (struct sockaddr *)&dns_udp, leni);
 				}
+				rs = NULL;
+				lua_pop(L, 1); 
 			} else {
 				log_it("Error calling function processQuery");
 				log_it((char *)lua_tostring(L, -1));

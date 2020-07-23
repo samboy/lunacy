@@ -8,8 +8,11 @@ bindIp = "127.0.0.2"
 -- in the next version of mmLunacyDNS!
 function processQuery(query)
   mmDNS.log("Query: " .. query) -- Log all queries
+  out = {mm1Type = "A", mm1Data = "127.0.0.1"}
   if(string.match(query,'.com.$')) then
-    return "10.1.1.1"
+    out.mm1Data = "10.1.1.1"
+  else
+    out.mm1Data = "10.2.2.2"
   end
-  return "10.2.2.2"
+  return out
 end
