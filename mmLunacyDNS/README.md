@@ -35,12 +35,13 @@ runs the lua function processQuery, which takes as its input a
 table with two members:
 
 * `mmQuery`: This is the DNS name requested, in the form of a string
-  like `caulixtla.com.` or `samiam.org.`.  If the string has anything
-  besides an ASCII letter, an ASCII number, the `-` character (dash), or
-  the `_` character (underline), the character will be a two-digit
-  hexadecimal number in brackets.  If we get the raw UTF-8 query
-  `ñ.samiam.org` (where the first character is a n with a tilde),
-  mmQuery will look like "{c3}{b1}.samiam.org.".
+  like `caulixtla.com.` or `samiam.org.` (observe the dot at the end of 
+  the mmQuery string).  If the string has anything besides an ASCII 
+  letter, an ASCII number, the `-` character (dash), or the `_` 
+  character (underline), the character will be a two-digit hexadecimal 
+  number in brackets.  If we get the raw UTF-8 query `ñ.samiam.org` 
+  (where the first character is a n with a tilde), mmQuery will look 
+  like `{c3}{b1}.samiam.org.`.
 * `mmQtype`: The is the numeric DNS query type requested.  This is a number
   between 0 and 65535, and corresponds to the DNS query type made.  A
   list of DNS query type numbers is available at
@@ -65,7 +66,7 @@ function processQuery(mmAll)
 end
 ```
 
-Here is a more complex example, where .com gets 10.1.1.1 and anything else
+Here is a more complex example, where *.com gets 10.1.1.1 and anything else
 gets 10.1.2.3, non-A queries are ignored, and we log A queries:
 
 ```lua
