@@ -113,6 +113,17 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         return sock;
 }
 
+static int mmDNS_log (lua_State *L) {
+	const char *message = luaL_checkstring(L,1);
+	log_it((char *)message);
+	return 0;	
+}	
+
+static const luaL_Reg mmDNSlib[] = {
+	{"log", mmDNS_log},
+	{NULL, NULL}
+};
+
 lua_State *init_lua(char *fileName) {
 	char useFilename[512];
 	lua_State *L = luaL_newstate(); // Initialize Lua
@@ -127,6 +138,7 @@ lua_State *init_lua(char *fileName) {
 	lua_pushcfunction(L, luaopen_bit32);
 	lua_pushstring(L, "bit32");
 	lua_call(L, 1, 0);
+	luaL_register(L, "mmDNS", mmDNSlib);
 	
 	/* The filename we use is {executable name}.lua.  
          * {executable name} is the name this is being called as,
@@ -323,7 +335,7 @@ int main(int argc, char **argv) {
 				const char *res;
 				res = luaL_checkstring(L, -1);		
 				if(res != NULL) {
-					set_return_ip(res);
+					set_return_ip((char *)res);
                 			for(a=0;a<16;a++) {
                         			in[len_inet + a] = p[a];
                 			}
@@ -334,7 +346,7 @@ int main(int argc, char **argv) {
 				}
 			} else {
 				log_it("Error calling function processQuery");
-				log_it(lua_tostring(L, -1));
+				log_it((char *)lua_tostring(L, -1));
 			}
 		}
         }
