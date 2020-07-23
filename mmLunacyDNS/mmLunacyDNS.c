@@ -362,6 +362,7 @@ int main(int argc, char **argv) {
 				}
 				if(rs != NULL) {
 					set_return_ip((char *)rs);
+					len_inet = 17 + qLen;
                 			for(a=0;a<16;a++) {
                         			in[len_inet + a] = p[a];
                 			}
