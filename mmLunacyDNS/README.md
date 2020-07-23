@@ -81,3 +81,16 @@ function processQuery(mmAll) -- Called for every DNS query received
   return {mm1Type = "A", mm1Data = "10.1.2.3"} -- Answer for anything not .com
 end
 ```
+
+# Sandboxing
+
+mmLunacyDNS provides some level of protection from untrusted `.lua` 
+configuration files.  It is run in sandbox mode: All top-level
+functions (such as `require`) are not present.  In addition, libraries
+which can affect other files (such as `io` or `lfs`) are not here.  
+What *is* present are three libraries for manipulating data: `string`,
+`math`, and a mostly complete implementation of `bit32`.
+
+To make up for there not being a `print` method, `mmDNS.log` can
+be called instead; note that `mmDNS.log` only takes a single string
+argument.
