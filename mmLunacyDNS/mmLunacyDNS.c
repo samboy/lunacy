@@ -24,19 +24,26 @@
  * embedded in the compiled binary
  */
 
+#include <stdint.h>
 #ifdef MINGW
 #include <winsock.h>
 #include <wininet.h>
-#endif /* MINGW */
+#ifndef FD_SETSIZE
+#define FD_SETSIZE 512
+#endif /* FD_SETSIZE */
+#include <winsock.h>
+#include <wininet.h>
+#define socklen_t int32_t
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif /* MINGW */
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdint.h>
 
 /* Luancy stuff */
 #include "lua.h"
@@ -44,7 +51,9 @@
 #include "lualib.h"
 
 /* We use a special SOCKET type for easier Windows porting */
+#ifndef MINGW
 #define SOCKET int
+#endif
 
 /* Log a message */
 #ifndef MINGW
@@ -73,11 +82,10 @@ void log_it(char *message) {
         GetTimeFormat(LOCALE_SYSTEM_DEFAULT, TIME_FORCE24HOURFORMAT, &t,
                 NULL, h, 250);
         fprintf(LOG,"%s %s: ",d,h);
-	show_win_time();
 	if(message != NULL) {
-		fprintf("%s\n",message);
+		fprintf(LOG,"%s\n",message);
 	} else {
-		fprintf("NULL string\n",message);
+		fprintf(LOG,"NULL string\n",message);
 	}
 }
 #endif /* MINGW */
@@ -119,17 +127,35 @@ uint32_t get_ip(char *stringIp) {
         return ip;
 }
 
+#ifdef MINGW
+void windows_socket_start() {
+        WSADATA wsaData;
+        WORD wVersionRequested = MAKEWORD(2,2);
+        WSAStartup( wVersionRequested, &wsaData);
+}
+#endif /* MINGW */
+
 /* Get port: Get a port locally and return the socket the port is on */
 SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         SOCKET sock;
         int len_inet;
+	struct timeval noblock;
+        noblock.tv_sec = 1; 
+        noblock.tv_usec = 0; 
 
         /* Bind to port 53 */
+#ifdef MINGW
+        windows_socket_start();
+#endif /* MINGW */
         sock = socket(AF_INET,SOCK_DGRAM,0);
         if(sock == -1) {
                 perror("socket error");
                 exit(0);
         }
+#ifdef MINGW
+        setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,
+		(char *)&noblock, sizeof(struct timeval));
+#endif /* MINGW */
         memset(dns_udp,0,sizeof(struct sockaddr_in));
         dns_udp->sin_family = AF_INET;
         dns_udp->sin_port = htons(53);
@@ -141,6 +167,9 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         len_inet = sizeof(struct sockaddr_in);
         if(bind(sock,(struct sockaddr *)dns_udp,len_inet) == -1) {
                 perror("bind error");
+#ifdef MINGW
+		printf("WSAGetLastError code: %d\n",WSAGetLastError());
+#endif /* MINGW */
                 exit(0);
         }
 
