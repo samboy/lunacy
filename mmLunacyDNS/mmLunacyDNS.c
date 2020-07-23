@@ -24,6 +24,10 @@
  * embedded in the compiled binary
  */
 
+#ifdef MINGW
+#include <winsock.h>
+#include <wininet.h>
+#endif /* MINGW */
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -43,11 +47,44 @@
 #define SOCKET int
 
 /* Log a message */
+#ifndef MINGW
 void log_it(char *message) {
 	if(message != NULL) {
 		puts(message);
 	}
 }
+#else /* MINGW */
+FILE *LOG = 0;
+int isInteractive = 0;
+void log_it(char *message) {
+        SYSTEMTIME t;
+        char d[256];
+        char h[256];
+	if(isInteractive == 1) {
+		puts(message);
+		return;
+	}
+	if(LOG == 0) {
+		return;
+	}
+        GetLocalTime(&t);
+        GetDateFormat(LOCALE_SYSTEM_DEFAULT, DATE_LONGDATE, &t,
+                NULL, d, 250);
+        GetTimeFormat(LOCALE_SYSTEM_DEFAULT, TIME_FORCE24HOURFORMAT, &t,
+                NULL, h, 250);
+        fprintf(LOG,"%s %s: ",d,h);
+	show_win_time();
+	if(message != NULL) {
+		fprintf("%s\n",message);
+	} else {
+		fprintf("NULL string\n",message);
+	}
+}
+#endif /* MINGW */
+	
+
+/* Set this to 0 to stop the server */
+int serverRunning = 1;
 
 /* This is the header placed before the 4-byte IP; we change the last four
  * bytes to set the IP we give out in replies */
@@ -251,8 +288,11 @@ int humanDNSname(char *in, char *out, int max) {
 	out[outPoint] = 0;
 	return inPoint;
 }
-	
-int main(int argc, char **argv) {
+
+
+/* Give a Lua state, which is the file 'config.lua' read, run the
+ * server */
+void runServer(lua_State *L) {
         int a, len_inet;
         SOCKET sock;
         char in[515];
@@ -260,27 +300,6 @@ int main(int argc, char **argv) {
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
         int leni = sizeof(struct sockaddr);
-	lua_State *L;
-
-	// Get bindIp and returnIp from Lua script
-	if(argc == 1) {
-		L = init_lua(argv[0]); // Initialize Lua
-	} else if(argc == 3) {
-		char *look = argv[1];
-		if(look[0] == '-' && look[1] == 'f' && look[2] == 0) {
-			L = init_lua(argv[2]); // Initialize Lua
-		} else {
-			log_it("Usage: mmLunacyDNS -f {config file}");
-			return 1;
-		}
-	} else {
-		log_it("Usage: mmLunacyDNS -f {config file}");
-		return 1;
-	}
-	if(L == NULL) {
-		log_it("Fatal error opening lua config file");
-		return 1;
-	}
 
 	// Get bindIp from the Lua program 
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
@@ -299,7 +318,7 @@ int main(int argc, char **argv) {
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
-        for(;;) {
+        while(serverRunning == 1) {
 		char query[500];
 		int qLen = -1;
                 /* Get data from UDP port 53 */
@@ -380,3 +399,261 @@ int main(int argc, char **argv) {
         }
 }
 
+#ifndef MINGW
+int main(int argc, char **argv) {
+	lua_State *L;
+
+	// Get bindIp and returnIp from Lua script
+	if(argc == 1) {
+		L = init_lua(argv[0]); // Initialize Lua
+	} else if(argc == 3) {
+		char *look = argv[1];
+		if(look[0] == '-' && look[1] == 'f' && look[2] == 0) {
+			L = init_lua(argv[2]); // Initialize Lua
+		} else {
+			log_it("Usage: mmLunacyDNS -f {config file}");
+			return 1;
+		}
+	} else {
+		log_it("Usage: mmLunacyDNS -f {config file}");
+		return 1;
+	}
+	if(L == NULL) {
+		log_it("Fatal error opening lua config file");
+		return 1;
+	}
+	runServer(L);
+}
+#else /* MINGW */
+
+/* This program is a Windows service; I would like to thank Steve Friedl who
+   put a public domain simple Windows service on his web site at unixwiz.net;
+   his public domain code made it possible for me to write the Win32
+   service code.
+
+   After compiling, one needs to install this service:
+
+        mmLunacyDNS.exe --install
+
+   Then one can start the service:
+
+        net start mmLunacyDNS
+
+   (It can also be started from Control Panel -> Administrative tools ->
+    Services; look for the "mmLunacyDNS" service)
+
+   To stop the service:
+
+        net stop mmLunacyDNS
+
+   (Or from the Services control panel)
+
+   To remove the service:
+
+        mmLunacyDNS.exe --remove
+
+   This program should compile and run in a MinGW-3.1.0-1 +
+   MSYS-1.0.10 environment.  I use a Windows XP virtual machine to compile
+   this program.
+
+ */
+
+
+static SERVICE_STATUS           sStatus;
+static SERVICE_STATUS_HANDLE    hServiceStatus = 0;
+#define COUNTOF(x)       (sizeof(x) / sizeof((x)[0]) )
+
+/* Install the service so it's in Windows' list of services */
+void svc_install_service() {
+        char szPath[512], svcbinary[550];
+
+        GetModuleFileName( NULL, szPath, COUNTOF(szPath) );
+        /* Call the program as "{name} service" so it knows to start as
+         * a service */
+        if (strstr(szPath, " ") != NULL) {
+                snprintf(svcbinary, COUNTOF(svcbinary), "\"%s\" service",
+                        szPath);
+        } else {
+                snprintf(svcbinary, COUNTOF(svcbinary), "%s service", szPath);
+        }
+
+        SC_HANDLE hSCManager = OpenSCManager(NULL, NULL,
+                                SC_MANAGER_CREATE_SERVICE);
+
+        SC_HANDLE hService = CreateService(
+                        hSCManager,
+                        "mmLunacyDNS",                   /* name of service */
+                        "mmLunacyDNS: https://maradns.samiam.org/",
+                        /* name to display */
+                        SERVICE_ALL_ACCESS,           /* desired access */
+                        SERVICE_WIN32_OWN_PROCESS,    /* service type */
+                        SERVICE_AUTO_START,           /* start type */
+                        SERVICE_ERROR_NORMAL,         /* error control type */
+                        svcbinary,                    /* service's binary */
+                        NULL,                         /* no load order grp */
+                        NULL,                         /* no tag identifier */
+                        "",                           /* dependencies */
+                        0,                     /* LocalSystem account */
+                        0);                    /* no password */
+
+        if(hService == NULL) {
+                printf("Problem creating service\n");
+        } else {
+                printf(
+         "mmLunacyDNS service installed; start with: net start mmLunacyDNS\n");
+        }
+
+        CloseServiceHandle(hService);
+        CloseServiceHandle(hSCManager);
+
+}
+
+/* Remove the service from Windows' list of services; it's probably a good
+ * idea to stop the service first */
+void svc_remove_service() {
+        SC_HANDLE hService = 0;
+        SC_HANDLE hSCManager = OpenSCManager(0,0,0);
+        hService = OpenService  (hSCManager,"mmLunacyDNS",DELETE);
+        if(DeleteService(hService) == 0) {
+                printf("Problem deleting service\n");
+        } else {
+                printf("mmLunacyDNS service removed\n");
+        }
+        CloseServiceHandle(hService);
+        CloseServiceHandle(hSCManager);
+}
+
+/* Handle a request to stop the service */
+void svc_service_control(DWORD dwControl) {
+        switch (dwControl) {
+                case SERVICE_CONTROL_SHUTDOWN:
+                case SERVICE_CONTROL_STOP:
+
+                sStatus.dwCurrentState  = SERVICE_STOP_PENDING;
+                sStatus.dwCheckPoint    = 0;
+                sStatus.dwWaitHint      = 2000; /* Two seconds */
+                sStatus.dwWin32ExitCode = 0;
+                serverRunning = 0;
+
+                default:
+                        sStatus.dwCheckPoint = 0;
+        }
+        SetServiceStatus(hServiceStatus, &sStatus);
+}
+
+/* This is the code that is invoked when the service is started */
+void svc_service_main(int argc, char **argv) {
+        char *a = 0, *b = 0, d = 0;
+        int c = 0;
+        char szPath[512];
+	lua_State *L;
+
+        hServiceStatus = RegisterServiceCtrlHandler(argv[0],
+                (void *)svc_service_control);
+        if(hServiceStatus == 0) {
+                return;
+        }
+
+        sStatus.dwServiceType                   = SERVICE_WIN32_OWN_PROCESS;
+        sStatus.dwCurrentState                  = SERVICE_START_PENDING;
+        sStatus.dwControlsAccepted              = SERVICE_ACCEPT_STOP
+                                                | SERVICE_ACCEPT_SHUTDOWN;
+        sStatus.dwWin32ExitCode                 = 0;
+        sStatus.dwServiceSpecificExitCode       = 0;
+        sStatus.dwCheckPoint                    = 0;
+        sStatus.dwWaitHint                      = 2 * 1000; /* Two seconds */
+        sStatus.dwCurrentState = SERVICE_RUNNING;
+
+        SetServiceStatus(hServiceStatus, &sStatus);
+
+        /* Set the CWD to the directory the service runs in */
+        GetModuleFileName( NULL, szPath, COUNTOF(szPath) );
+        a = szPath;
+        while(*a != 0 && c < 250) {
+                if(*a == '/' || *a == '\\') {
+                        b = a;
+                }
+                a++;
+                c++;
+        }
+        if(b != 0) {
+                d = *b;
+                *b = 0; /* Now ARGV[0] is the path to the program */
+                chdir(szPath);
+                *b = d;
+        }
+
+        LOG = fopen("mmLunacyDNSLog.txt","ab");
+        log_it("==mmLunacyDNS started==");
+        L = init_lua(argv[0]);
+	if(L == NULL) {
+		fprintf(LOG,"FATAL: Can not init Lua state!\n");
+		exit(1);
+	}
+	runServer(L);
+	log_it("==mmLunacyDNS stopped==");
+        fclose(LOG);	
+
+        /* Clean up the stopped service; otherwise we get a nasty error in
+           Win32 */
+        sStatus.dwCurrentState  = SERVICE_STOPPED;
+        SetServiceStatus(hServiceStatus, &sStatus);
+
+}
+
+/* The main() function that calls the service */
+int main(int argc, char **argv) {
+
+        int a=0;
+        char *b;
+        int action = 0;
+
+        static SERVICE_TABLE_ENTRY      Services[] = {
+                { "mmLunacyDNS",  (void *)svc_service_main },
+                { 0 }
+        };
+        if(argc > 1) {
+
+                /* Are we started as a service? */
+                if (strcmp(argv[1], "service") == 0) {
+                        if (!StartServiceCtrlDispatcher(Services)) {
+                                printf("Fatal: Can not start service!\n");
+                                return 1;
+                        }
+                        return 0;
+                }
+
+                b = argv[1];
+                for(a=0;a<5 && *b;a++) {
+                        if(*b == 'r') { /* --remove */
+                                action = 1;
+                        } else if(*b == 'd') { /* --nodaemon */
+                                action = 2;
+                        }
+                        b++;
+                }
+                if(action == 1) { /* --remove */
+                        svc_remove_service();
+                } else if(action == 2) { /* --nodaemon */
+			lua_State *L;
+			isInteractive = 1;
+			L = init_lua(argv[0]);
+			if(L != NULL) {
+				runServer(L);
+			} else {
+				puts("Fatal: Can not init Lua");
+				exit(1);
+			}
+                } else { /* --install */
+                        svc_install_service();
+                }
+        } else {
+                printf("mmLunacyDNS version 2020-07-23\n\n");
+                printf(
+	            "mmLunacyDNS is a DNS server that is a Windows service\n\n"
+                    "To install this service:\n\n\tmmLunacyDNS --install\n\n"
+                    "To remove this service:\n\n\tmmLunacyDNS --remove\n\n");
+        }
+        return 0;
+}
+#endif /* MINGW */

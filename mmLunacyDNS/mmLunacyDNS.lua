@@ -2,7 +2,8 @@
 -- This file is a Lua script
 -- The API is unstable and subject to change
 
-bindIp = "127.0.0.2"
+-- This is the IP the server will have
+bindIp = "127.0.0.1"
 
 -- Here is the API:
 -- print (and all top-level methods) is disabled.  However, all
