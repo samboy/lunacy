@@ -21,7 +21,10 @@ has a Lua function which is called every time a DNS query is received.
 The script `compile.mmLunacyDNS.sh` compiles mmLunacyDNS and links it
 to Lunacy (Lua).
 
-mmLunacyDNS currently has no daemonization support.
+`mmLunacyDNS` currently has no UNIX/BSD/Linux daemonization support (but
+it can be made a daemon with `Duende` included with MaraDNS).  It does, 
+however, install and run as a Windows service; a binary is in the
+top-level `bin/` folder.
 
 # Configuration file format
 
