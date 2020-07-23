@@ -301,6 +301,7 @@ int main(int argc, char **argv) {
          * DNS requests */
         for(;;) {
 		char query[500];
+		int qLen = -1;
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
                         &foo);
@@ -316,19 +317,47 @@ int main(int argc, char **argv) {
                         in[7]++;
 			in[11] = 0; // Ignore EDNS
                 }
-	 	if(humanDNSname(in + 12, query, 490) != -1) {
+		qLen = humanDNSname(in + 12, query, 490);
+	 	if(qLen > 0) {
+			int qType = -1;
+			qType = (in[13 + qLen] * 256) + in[14 + qLen];
 			lua_getglobal(L, "processQuery");
+
+			// Function input is a table, which I will call "t"
+			lua_newtable(L);
+
+			// t["mmQuery"] = query, where "query" is the
+			// dns query made (with a trailing dot), such
+			// as "caulixtla.com." or "lua.org."	
+			lua_pushstring(L,"mmQuery");
 			lua_pushstring(L,query);
+			lua_settable(L, -3);
+
+			// t["mmQtype"] is a number with the query type
+			lua_pushstring(L,"mmQtype");
+			lua_pushinteger(L,(lua_Integer)qType);
+			lua_settable(L, -3);
+
 			if (lua_pcall(L, 1, 1, 0) == 0) {
 				const char *rs;
 				// Pull mmType from return table
-				lua_getfield(L, -1, "mm1Type");
-				rs = luaL_checkstring(L, -1);
+				rs = NULL;
+				if(lua_type(L, -1) == LUA_TTABLE) {
+					lua_getfield(L, -1, "mm1Type");
+				        if(lua_type(L, -1) == LUA_TSTRING) {
+						rs = luaL_checkstring(L, -1);
+					}
+				}
 				if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
 					lua_pop(L, 1); 
 					lua_getfield(L, -1, "mm1Data");
-					rs = luaL_checkstring(L, -1);		
-				} else {
+				        if(lua_type(L, -1) == LUA_TSTRING) {
+						rs = luaL_checkstring(L, -1);						} else {
+						lua_pop(L, 1);
+						rs = NULL;
+					}
+				} else if(rs != NULL) {
+					lua_pop(L, 1);
 					rs = NULL;
 				}
 				if(rs != NULL) {
@@ -340,9 +369,8 @@ int main(int argc, char **argv) {
                 			/* Send the reply */
                 			sendto(sock,in,len_inet + 16,0, 
 					    (struct sockaddr *)&dns_udp, leni);
+					lua_pop(L, 1); 
 				}
-				rs = NULL;
-				lua_pop(L, 1); 
 			} else {
 				log_it("Error calling function processQuery");
 				log_it((char *)lua_tostring(L, -1));
