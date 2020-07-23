@@ -127,7 +127,10 @@ lua_State *init_lua(char *fileName) {
 		int a;
 		int lastDot = 505;
 		// Find the final '.' in the executable name
-		for(a = 0; a < 500; a++) {
+		for(a = 1; a < 500; a++) {
+			if(fileName[a] == 0) {
+				break;
+			}
 			if(fileName[a] == '.') {
 				lastDot = a;
 			}
