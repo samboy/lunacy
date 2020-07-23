@@ -116,6 +116,18 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
 lua_State *init_lua(char *fileName) {
 	char useFilename[512];
 	lua_State *L = luaL_newstate(); // Initialize Lua
+	// Add string, math, and bit32.
+	// Don't add everything (io, lfs, etc. allow filesystem access)
+	lua_pushcfunction(L, luaopen_string);
+	lua_pushstring(L, "string");
+	lua_call(L, 1, 0);
+	lua_pushcfunction(L, luaopen_math);
+	lua_pushstring(L, "math");
+	lua_call(L, 1, 0);
+	lua_pushcfunction(L, luaopen_bit32);
+	lua_pushstring(L, "bit32");
+	lua_call(L, 1, 0);
+	
 	/* The filename we use is {executable name}.lua.  
          * {executable name} is the name this is being called as,
          * usually mmLunacyDNS (or mmLunacyDNS.exe in Windows).
@@ -127,12 +139,15 @@ lua_State *init_lua(char *fileName) {
 		int a;
 		int lastDot = 505;
 		// Find the final '.' in the executable name
-		for(a = 1; a < 500; a++) {
+		for(a = 0; a < 500; a++) {
 			if(fileName[a] == 0) {
 				break;
 			}
 			if(fileName[a] == '.') {
 				lastDot = a;
+			}
+			if(fileName[a] == '/' || fileName[a] == 92) { 
+				lastDot = 505;
 			}
 		}
 		for(a = 0; a < 500; a++) {
