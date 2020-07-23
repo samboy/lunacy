@@ -95,3 +95,30 @@ What *is* present are three libraries for manipulating data: `string`,
 To make up for there not being a `print` method, `mmDNS.log` can
 be called instead; note that `mmDNS.log` only takes a single string
 argument.
+
+# Windows binary
+
+In the `bin/` folder, there is a Windows binary of mmLunacyDNS available.
+This is a service for Windows computers.  To install the service,
+as an administrator, do the following:
+
+```
+	mmLunacyDNS.exe --install
+	net start mmLunacyDNS
+```
+
+The mmLunacyDNS.exe file will use, as a configuration file, 
+`mmLunacyDNS.lua` in the same location `mmLunacyDNS.exe` is 
+located.  Messages will be logged in the file `mmLunacyDNSLog.txt`,
+again in the same location as `mmLunacyDNS.exe`.
+
+To stop the service:
+
+```
+	net stop mmLunacyDNS
+```
+
+It will take about two seconds to stop the mmLunacyDNS service.
+
+
+
