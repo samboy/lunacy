@@ -75,15 +75,24 @@ static TString *newlstr (lua_State *L, const char *str, size_t l,
 #include <stdint.h>
 // Sip hash has a 128-bit key which should be fairly random
 // This comes from the RadioGatun[32] hash of "https://maradns.samiam.org"
+#ifdef FullSipHash
 uint64_t sipKey1 = 0xded6cbc72f7eeb4fULL;
 uint64_t sipKey2 = 0x81875fe84b1705d7ULL;
+#else
+uint32_t sipKey1 = 0xded6cbc7;
+uint64_t sipKey2 = 0x2f7eeb4f;
+#endif
 
+#ifdef FullSipHash
 void SipHashSetKey(uint64_t a, uint64_t b) {
+#else
+void SipHashSetKey(uint32_t a, uint32_t b) {
+#endif
   sipKey1 = a;
   sipKey2 = b;
 }
 
-#ifdef HalfSipHash
+#ifndef FullSipHash
 // HalfSipHash31
 uint32_t SipHash(const char *str, size_t l) {
   uint32_t v0, v1, v2, v3, m;
@@ -91,8 +100,8 @@ uint32_t SipHash(const char *str, size_t l) {
   size_t offset = 0;
 
   // We calculate the hash via SipHash, for security reasons
-  v0 = (uint32_t)sipKey1;
-  v1 = (uint32_t)sipKey2;
+  v0 = sipKey1;
+  v1 = sipKey2;
   v2 = v0 ^ 0x6c796765;
   v3 = v1 ^ 0x74656462;
   m = 0;
@@ -145,7 +154,7 @@ uint32_t SipHash(const char *str, size_t l) {
   }
   return v1 ^ v3;
 } 
-#else // HalfSipHash
+#else // FullSipHash
 uint64_t SipHash(const char *str, size_t l) {
   uint64_t v0, v1, v2, v3, m;
   int shift = 0, round = 0;
@@ -210,7 +219,7 @@ uint64_t SipHash(const char *str, size_t l) {
   }
   return v0 ^ v1 ^ v2 ^ v3;
 } 
-#endif // HalfSipHash
+#endif // FullSipHash
 
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
   GCObject *o;
