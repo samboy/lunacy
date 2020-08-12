@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-08)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-11)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -536,13 +536,23 @@ Right now:
 
 <p>
 
-For security reasons, Lunacy uses SipHash as the string hash
-compression function.  When linking to Lunacy, a C program
-can run this code before running any Lua code:
+For security reasons, Lunacy uses a variant of SipHash as the string
+hash compression function.  The variant used is “HalfSipHash-1-3”,
+the 32-bit version of SipHash with fewer rounds.  This balances the
+need to both have a secure hash compression function while using one
+with a minimum performance penalty on both 32-bit and 64-bit builds
+of Lunacy.  My testing indicates this hash function only slows
+down real-world performance by 2.5% to 3%, regardless of whether
+we build a 32-bit or 64-bit binary.
+
+<p>
+
+When linking to Lunacy, a C program can run
+this code before running any Lua code:
 
 <code>SipHashSetKey(x, y);</code>
 
-Where "x" and "y" are suitably random 64-bit numbers (uint64_t).  Do
+Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
 
