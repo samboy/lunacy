@@ -547,6 +547,17 @@ we build a 32-bit or 64-bit binary.
 
 <p>
 
+Since HalfSiphash only has a 64-bit key, it is not fully secure in cases
+where an attacker has significant computing resources to brute force
+the key, and where the attacker is able to see the hash compression
+values for strings.  However, in the case of using HalfSipHash31 as a
+hash compression string, an attacker will not be able to see the hash
+compression values; to do so would require viewing the memory used by a
+Lua process — if an attacker has that level of access, there are other
+far more devistating attacks they can perform.
+
+<p>
+
 When linking to Lunacy, a C program can run
 this code before running any Lua code:
 
