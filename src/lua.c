@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#ifdef MINGW
+#include <winsock.h>
+#include <wincrypt.h>
+#endif // MINGW
+
 
 #define lua_c
 
