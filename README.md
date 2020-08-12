@@ -8,9 +8,13 @@ compiles and runs in Linux (CentOS 7 64-bit).
 
 # Lunacy changes from Lua 5.1
 
-* Lunacy is compiled as a tiny (117,760 byte) Windows 32-bit binary
+* Lunacy is compiled as a tiny (118,784 byte) Windows 32-bit binary
   which is (as of 2020) Windows XP and Windows 10 compatible.  This
   binary is in the `bin/` folder.
+* **Security fix** Lunacy uses HalfSipHash-1-3 as its string hash
+  compression function.  It is also possible to use SipHash-1-3 or
+  SipHash-2-4 as the compression function; see README.SipHash.md
+  for details.
 * To make sure we don't have issues come January 19, 2038, `os.clock()`,
   `os.time()`, `os.date()`, and `os.difftime()` have all been removed
   (If you want to play with dates, use a 64-bit compile of Lua so we don’t

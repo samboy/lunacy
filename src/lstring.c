@@ -93,7 +93,7 @@ void SipHashSetKey(uint32_t a, uint32_t b) {
 }
 
 #ifndef FullSipHash
-// HalfSipHash31
+// HalfSipHash1-3
 uint32_t SipHash(const char *str, size_t l) {
   uint32_t v0, v1, v2, v3, m;
   int shift = 0, round = 0;
