@@ -106,7 +106,9 @@ uint64_t SipHash(const char *str, size_t l) {
       }
       shift = 0;
       v3 ^= m;
+#ifdef SIP24
       for(round = 0; round < 2; round++) {
+#endif // SIP24
         v0 += v1; v2 += v3;
         v1 = (v1 << 13) | (v1 >> 51);
         v3 = (v3 << 16) | (v3 >> 48);
@@ -117,7 +119,9 @@ uint64_t SipHash(const char *str, size_t l) {
         v3 = (v3 << 21) | (v3 >> 43);
         v1 ^= v2; v3 ^= v0;
         v2 = (v2 << 32) | (v2 >> 32);
+#ifdef SIP24
       }
+#endif // SIP24
       v0 ^= m;
       shift = 0;
       m = 0;
@@ -125,7 +129,11 @@ uint64_t SipHash(const char *str, size_t l) {
     offset++;
   }   
   v2 ^= 255;
+#ifdef SIP24
   for(round = 0; round < 4; round++) {
+#else // SIP24
+  for(round = 0; round < 3; round++) {
+#endif // SIP24
     v0 += v1; v2 += v3;
     v1 = (v1 << 13) | (v1 >> 51);
     v3 = (v3 << 16) | (v3 >> 48);
