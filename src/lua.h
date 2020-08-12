@@ -54,7 +54,11 @@ typedef int (*lua_CFunction) (lua_State *L);
 
 /* SipHash stuff; please make key random when hash security matters */
 void SipHashSetKey(uint64_t a, uint64_t b);
+#ifndef HalfSipHash
 uint64_t SipHash(const char *str, size_t l);
+#else
+uint32_t SipHash(const char *str, size_t l);
+#endif
 
 /*
 ** functions that read/write blocks when loading/dumping Lua chunks
