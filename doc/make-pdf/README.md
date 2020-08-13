@@ -10,7 +10,10 @@ I use the fonts over at [my font
 repo](https://github.com/samboy/CaulixtlaFonts) to render this PDF file;
 look in the folders `DesktopFonts/` and `DesktopFonts/ExtraSymbols/`.
 
-Note that `wkhtmltox` has a bug where it will silently put symbols from
-system fonts in to PDF files.  The way I make sure this is not happening
-is by opening up the PDF document in Fontforge to make sure all embedded
-symbols come from open-source fonts.
+Note that `wkhtmltox` has a bug where it will silently put symbols
+from system fonts in to PDF files if it can not find a symbol in a
+user-specified font.  The way I make sure this is not happening is
+by expanding the fonts I use to render the PDF to have all of the 
+missing symbols (§, –, ꞏ, ≤/⩽), then open up the PDF document in 
+Fontforge to make sure all embedded symbols come from open-source 
+fonts.
