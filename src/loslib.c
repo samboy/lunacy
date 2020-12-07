@@ -144,6 +144,7 @@ static int os_setlocale (lua_State *L) {
 static int os_time (lua_State *L) {
 #ifndef MINGW
   time_t t;
+  int64_t tt;
   if (lua_isnoneornil(L, 1))  /* called without args? */
     t = time(NULL);  /* get current time */
   else {
@@ -151,10 +152,15 @@ static int os_time (lua_State *L) {
     lua_pushnil(L);
     return 1;
   }
+  if(t < -1) {
+    tt = (int64_t)t + 4294967296ULL;
+  } else {
+    tt = (int64_t)t;
+  }
   if (t == (time_t)(-1))
     lua_pushnil(L);
   else
-    lua_pushnumber(L, (lua_Number)t);
+    lua_pushnumber(L, (lua_Number)tt);
   return 1;
 #else
   /* Convert Windows "filetime" in to Lua number */
