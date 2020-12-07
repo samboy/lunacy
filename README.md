@@ -16,9 +16,13 @@ compiles and runs in Linux (CentOS 7 64-bit).
   SipHash-2-4 as the compression function; see the section SipHash
   below for details.
 * To make sure we don't have issues come January 19, 2038, `os.clock()`,
-  `os.time()`, `os.date()`, and `os.difftime()` have all been removed
-  (If you want to play with dates, use a 64-bit compile of Lua so we don’t
-   have headaches come 2038).
+  `os.date()`, and `os.difftime()` have all been removed (If you want 
+  to play with dates, use a 64-bit compile of Lua so we don’t
+  have headaches come 2038).  `os.time()` is here (and is Y2038 compliant,
+  both as a 32-bit and 64-bit build: The Windows build uses the Y2038
+  compliant “FileTime” API, and the 32-bit *NIX build gives negative
+  timestamps post-Y2038 values), but only returns the current
+  system time.
 * `math.random()` uses RadioGatún[32] instead of `rand()` to get higher
   quality random numbers.  `math.random()` works as usual, but there is
   now `math.rand16()`, which generates 16-bit random numbers (i.e. a 
