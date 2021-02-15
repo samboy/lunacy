@@ -45,9 +45,6 @@ LUALIB_API int (luaopen_lfs) (lua_State * L);
 #define LUA_BITLIBNAME  "bit32"
 LUALIB_API int (luaopen_bit32) (lua_State *L);
 
-#define LUA_EXLIBNAME "ex"
-LUALIB_API int (luaopen_ex) (lua_State *L);
-
 /* open all previous libraries */
 LUALIB_API void (luaL_openlibs) (lua_State *L);
 
