@@ -32,7 +32,7 @@
         </style>
       </head>
       <body>
-<h1>Lunacy (Lua) 5.1 Reference Manual (Release 2020-12-06)</h1>
+<h1>Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-15)</h1>
         <ul><xsl:apply-templates select="outline:item/outline:item"/></ul>
       </body>
     </html>
