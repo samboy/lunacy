@@ -1,3 +1,18 @@
+/* Implementation of popen2 for Lua
+ * This is the only one I found which
+ * 1) Works (LuaEx *does not* work)
+ * 2) Works in Win32 (lpc *does not* have Win32 support)
+ * 3) Has a known license (popen *does not* have a license)
+ *
+ * Usage example:
+
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+
+ */
 #ifndef MINGW
 // unix-spawner-ex.c
 /* An extension for SciTE Lua that provides process management for SciTE scripts.
