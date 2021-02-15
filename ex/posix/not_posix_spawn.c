@@ -12,22 +12,22 @@
 #include <sys/types.h>
 
 #include "environ.h"
-#include "posix_spawn.h"
+#include "not_posix_spawn.h"
 
 #ifndef OPEN_MAX
 #define OPEN_MAX sysconf(_SC_OPEN_MAX)
 #endif
 
 
-int posix_spawn_file_actions_init(
-  posix_spawn_file_actions_t *act)
+int not_posix_spawn_file_actions_init(
+  not_posix_spawn_file_actions_t *act)
 {
   act->dups[0] = act->dups[1] = act->dups[2] = -1;
   return 0;
 }
 
-int posix_spawn_file_actions_adddup2(
-  posix_spawn_file_actions_t *act,
+int not_posix_spawn_file_actions_adddup2(
+  not_posix_spawn_file_actions_t *act,
   int d,
   int n)
 {
@@ -45,17 +45,17 @@ int posix_spawn_file_actions_adddup2(
   return 0;
 }
 
-int posix_spawn_file_actions_destroy(
-  posix_spawn_file_actions_t *act)
+int not_posix_spawn_file_actions_destroy(
+  not_posix_spawn_file_actions_t *act)
 {
   return 0;
 }
 
-int posix_spawnp(
+int not_posix_spawnp(
   pid_t *restrict ppid,
   const char *restrict path,
-  const posix_spawn_file_actions_t *act,
-  const posix_spawnattr_t *restrict attrp,
+  const not_posix_spawn_file_actions_t *act,
+  const not_posix_spawnattr_t *restrict attrp,
   char *const argv[restrict],
   char *const envp[restrict])
 {
