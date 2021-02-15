@@ -1,8 +1,8 @@
 -- popen2()
 function popen2(...)
-  local in_rd, in_wr = io.pipe()
-  local out_rd, out_wr = io.pipe()
-  local proc, err = os.spawn{stdin = in_rd, stdout = out_wr, ...}
+  local in_rd, in_wr = ex.pipe()
+  local out_rd, out_wr = ex.pipe()
+  local proc, err = ex.spawn{stdin = in_rd, stdout = out_wr, ...}
   in_rd:close(); out_wr:close()
   if not proc then
     in_wr:close(); out_rd:close()
