@@ -49,6 +49,30 @@ function rStrSplit(s, splitOn)
   return out
 end
 
+----------------------- pStrSplit() -----------------------
+-- This splits a string on a given Lua regular expression
+-- Input: string, split regex
+-- Output: An array split on the regex (e.g. "%s+" or "%,")
+-- Example usage:
+-- a="Hello, there, I am glad to meet you.  How are you?  I am fine.  Thanks."
+-- for _,v in ipairs(pStrSplit(a,"%s+")) do print(v) end
+function pStrSplit(s, splitOn)
+  if not splitOn then splitOn = "," end
+  local place = true
+  local out = {} 
+  local mark
+  local last = 1
+  while place do
+    place, mark = string.find(s, splitOn, last, false) 
+    if place then
+      table.insert(out,string.sub(s, last, place - 1))
+      last = mark + 1
+    end
+  end 
+  table.insert(out,string.sub(s, last, -1))
+  return out
+end
+
 ----------------------- qCsvSplit() -----------------------
 -- This handles the pesky issue of quoted CSV like this:
 -- '"foo, bar",2,"field 3, you know",This is field 4'
