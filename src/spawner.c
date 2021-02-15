@@ -17,11 +17,11 @@
 #include <string.h>
 #include <glob.h>
 
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
 
-#include <gdk/gdk.h>
+/* #include <gdk/gdk.h> */
 
 static int verbose = 0;
 
@@ -111,7 +111,7 @@ typedef struct {
     FILE* rdr;
     lua_State* L;
     int child_fd;
-    gint gdk_handle;
+    /* gint gdk_handle; */
 
 } Spawner;
 
@@ -168,6 +168,7 @@ void read_callback(Spawner* p)
         if (verbose) fprintf(stderr,"'%s'\n",line);
         lua_invoke(p->L,p->output,line);
     } else {        
+        /*
         gdk_input_remove(p->gdk_handle);
         if (p->result != NULL) {
             char buff[15];
@@ -176,6 +177,7 @@ void read_callback(Spawner* p)
             sprintf(buff,"%d",res);
             lua_invoke(p->L,p->result,buff);
         }  
+	*/
     }
 }
 
@@ -257,9 +259,10 @@ static int spawner_run(lua_State* L)
 		return 1;
 	}
 	if (spp->output != NULL) {
+	/*
         spp->gdk_handle = gdk_input_add(spp->child_fd, GDK_INPUT_READ,
 		                            (GdkInputFunction) read_callback, spp);
-
+	*/
 	}
 	lua_pushboolean(L,1);
 	return 1;
@@ -538,7 +541,7 @@ static void createmeta (lua_State *L) {
 int luaopen_spawner(lua_State *L)
 {
 	createmeta(L);
-	luaL_openlib (L, "spawner", spawner, 0);
+	luaL_register(L, "spawner", spawner);
 	luaL_newmetatable(L, "SPAWNER");  // create metatable for spawner objects
 	lua_pushvalue(L, -1);  // push metatable
 	lua_setfield(L, -2, "__index");  // metatable.__index = metatable
@@ -1202,11 +1205,11 @@ int luaopen_spawner(lua_State *L)
     create_thread_window();
     createmeta(L);
 
-    luaL_openlib (L, "spawner", spawner, 0);
+    luaL_register (L, "spawner", spawner);
     luaL_newmetatable(L, SPAWNER);  // create metatable for spawner objects
     lua_pushvalue(L, -1);  // push metatable
     lua_setfield(L, -2, "__index");  // metatable.__index = metatable
     luaL_register(L, NULL, spawner_methods); 	
     return 1;	
 }
-#endif MINGW
+#endif // MINGW
