@@ -471,5 +471,24 @@ int luaopen_ex(lua_State *L)
   luaL_register(L, name, ex_oslib);           /* . P ex */
   luaL_register(L, 0, ex_iolib);
   copyfields(L, ex_process_functions, -2, -1);
+  ex = lua_gettop(L);
+  /* extend the os table */
+  lua_getglobal(L, "os");                     /* . os */
+  if (lua_isnil(L, -1)) return luaL_error(L, "os not loaded");
+  copyfields(L, ex_oslib, ex, -1);
+  lua_getfield(L, -1, "remove");
+  lua_setfield(L, ex, "remove");
+  /* extend the io table */
+  lua_getglobal(L, "io");                     /* . io */
+  if (lua_isnil(L, -1)) return luaL_error(L, "io not loaded");
+  copyfields(L, ex_iolib, ex, -1);
+  lua_getfield(L, ex, "pipe");                /* . io ex_pipe */
+  lua_getfield(L, -2, "open");                /* . io ex_pipe io_open */
+  lua_getfenv(L, -1);                         /* . io ex_pipe io_open E */
+  lua_setfenv(L, -3);                         /* . io ex_pipe io_open */
+  /* extend the io.file metatable */
+  luaL_getmetatable(L, LUA_FILEHANDLE);       /* . F */
+  if (lua_isnil(L, -1)) return luaL_error(L, "can't find FILE* metatable");
+  copyfields(L, ex_iofile_methods, ex, -1);
   return 1;
 }
