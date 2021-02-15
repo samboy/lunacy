@@ -575,9 +575,9 @@ int luaopen_spawner(lua_State *L)
 #include <io.h>
 #include <fcntl.h>
 #include <ctype.h>
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
 
 static char buffer[16384]; // buffer for reading from a process
 static char linebuf[512];  // line buffer
