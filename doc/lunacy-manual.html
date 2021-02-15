@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-12-06)
+Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-14)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -567,6 +567,36 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
+
+<p>
+
+Another library which has been added is the <code>ex</code> library.
+This allows Lunacy to, among other things, open up two-way pipes with
+other processes.
+
+<p>
+
+For example:
+
+<pre>
+-- popen2()
+function popen2(...)
+  local in_rd, in_wr = ex.pipe()
+  local out_rd, out_wr = ex.pipe()
+  local proc, err = ex.spawn{stdin = in_rd, stdout = out_wr, ...}
+  in_rd:close(); out_wr:close()
+  if not proc then
+    in_wr:close(); out_rd:close()
+    return proc, err
+  end
+  return proc, out_rd, in_wr
+end
+-- usage:
+local p, i, o = assert(popen2("wc", "-w"))
+o:write("Hello world"); o:close()
+print(i:read"*l"); i:close()
+p:wait()
+</pre>
 
 <p><A HREF="#contents">Contents</A>
 
