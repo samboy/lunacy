@@ -1,5 +1,5 @@
 [Note: There is not a single line of Scintilla nor SciTE code included
- with Lua.  However, the src/spawner.c file has a note that it is
+ with Luancy.  However, the src/spawner.c file has a note that it is
  "Released under the same generous licence as SciTE itself", so this
  copyright notice is included.]
 
