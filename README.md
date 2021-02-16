@@ -8,8 +8,8 @@ compiles and runs in Linux (CentOS 7 64-bit).
 
 # Lunacy changes from Lua 5.1
 
-* Lunacy is compiled as a tiny (118,784 byte) Windows 32-bit binary
-  which is (as of 2020) Windows XP and Windows 10 compatible.  This
+* Lunacy is compiled as a tiny (115,200 byte) Windows 32-bit binary
+  which is (as of 2021) Windows XP and Windows 10 compatible.  This
   binary is in the `bin/` folder.
 * **Security fix** Lunacy uses HalfSipHash-1-3 as its string hash
   compression function.  It is also possible to use SipHash-1-3 or
@@ -35,6 +35,8 @@ compiles and runs in Linux (CentOS 7 64-bit).
   directory and file traversal are present.
 * `bit32` libs, based on the Lua 5.2 and Lua 5.3 API, are here for bit
   manipulation.
+* A module by Steve Donovan called `spawner` is here so we can have a 
+  version of Python’s old `popen2` in Luancy.
 
 # SipHash
 
