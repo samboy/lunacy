@@ -8064,6 +8064,13 @@ integer in the range <em>[m, n]</em>.
 It is also possible to use <code>math.rand16</code> to generate
 pseudo-random numbers between 0 and 65535.
 
+<p>
+<code>math.random()</code> may also be called as <code>rg32.random()</code>; 
+<code>math.rand16()</code> may be called as <code>rg32.random()</code>.  
+These names are aliases to allow to allow stock Lua to load <code>rg32</code>
+as a third party library and generate the same random numbers as Lunacy.
+Indeed, the <code>rg32</code> functions use the same random state
+as the <code>math.random()</code> functions.
 
 <p>
 <hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
@@ -8084,6 +8091,9 @@ UTF-8 hi-bit characters) is allowed.
 If a number is given to <code>randomseed</code>, Lua
 converts the number in to a string before seeding
 the random state.
+
+<p>
+<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
 
 <p>
 <hr><h3><a name="pdf-math.sin"><code>math.sin (x)</code></a></h3>
