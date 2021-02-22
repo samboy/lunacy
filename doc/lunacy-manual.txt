@@ -1,12 +1,12 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2020-12-06)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-21)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
 
-   Copyright © 2006–2012 Lua.org, PUC-Rio. Copyright © 2020 Sam Trenholme.
-   Freely available under the terms of the Lua license.
+   Copyright © 2006-2012 Lua.org, PUC-Rio. Copyright © 2020-2021 Sam
+   Trenholme. Freely available under the terms of the Lua license.
      __________________________________________________________________
 
 Contents
@@ -473,6 +473,17 @@ end
    any Lua code: SipHashSetKey(x, y); Where "x" and "y" are suitably
    random 32-bit numbers (uint32_t). Do not call SipHashSetKey() once any
    Lua code is running; otherwise things will break very badly in Lua.
+
+   Lunacy also has a port of Steve Donovan’s spawner library so that
+   Lunacy has popen2 support to spawn sub-processes with both input and
+   output piped to the Lunacy script.
+
+   Example popen2 usage:
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
 
    Contents
 
@@ -5103,6 +5114,12 @@ void luaL_where (lua_State *L, int lvl);
 
    It is also possible to use math.rand16 to generate pseudo-random
    numbers between 0 and 65535.
+
+   math.random() may also be called as rg32.random(); math.rand16() may be
+   called as rg32.rand16(). These names are aliases to allow stock Lua to
+   load rg32 as a third party library and generate the same random numbers
+   as Lunacy. Indeed, the rg32 functions use the same random state as the
+   math.random() functions.
      __________________________________________________________________
 
   math.randomseed (x)
@@ -5116,6 +5133,8 @@ void luaL_where (lua_State *L, int lvl);
 
    If a number is given to randomseed, Lua converts the number in to a
    string before seeding the random state.
+
+   math.randomseed() has the alias rg32.randomseed().
      __________________________________________________________________
 
   math.sin (x)
@@ -5900,4 +5919,4 @@ void luaL_where (lua_State *L, int lvl);
 
      __________________________________________________________________
 
-   Last update: Sun Dec 6 2020
+   Last update: Sun Feb 21 2021
