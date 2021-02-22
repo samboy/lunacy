@@ -191,6 +191,25 @@ void rgl(rg*u,rg*w,const char*v){rg s,q,c,x;rgp(40)w[c]=u[c%19]=0;for
 x){rgn;rgp(17)rgf(u,w);return;}}rgn;}}}
 rg rgi(rg*m,rg*b,rg*a){if(*a&2)rgf(m,b);return m[*a^=3];}
 
+static int rg32_rand32 (lua_State *L) {
+  uint32_t num;
+  num = rgi(rg_mill, rg_belt, &rg_phase);
+  num = ((num << 24) | ((num & 0xff00) << 8) | ((num & 0xff0000) >> 8) |
+         (num >> 24));
+  lua_Number r = (lua_Number)(num);
+  lua_pushnumber(L, r);
+  return 1;
+}
+
+static int rg32_runmill (lua_State *L) {
+  int count = luaL_checknumber(L, 1);
+  int a;
+  for(a = 0; a < count; a++) {
+    rgf(rg_mill, rg_belt);
+  }
+  return 0;
+}
+
 // This is used so we can get ints directly from RadioGatun.  They are 16
 // bits in size because 32-bit floats have 24 bits of percision, and it's
 // a lot simpler to get 16 bits from rg32 instead of 24 bits
@@ -292,6 +311,8 @@ static const luaL_Reg mathlib[] = {
 
 static const luaL_Reg rg32lib[] = {
   {"rand16",     math_rand16},
+  {"rand32",     rg32_rand32},
+  {"runmill",    rg32_runmill},
   {"random",     math_random},
   {"randomseed", math_randomseed},
   {NULL, NULL}
