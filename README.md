@@ -26,17 +26,24 @@ compiles and runs in Linux (CentOS 7 64-bit).
 * `math.random()` uses RadioGatún[32] instead of `rand()` to get higher
   quality random numbers.  `math.random()` works as usual, but there is
   now `math.rand16()`, which generates 16-bit random numbers (i.e. a 
-  random integer between 0 and 65,535).  `math.randomseed()` takes a 
+  random integer between 0 and 65,535) in a manner which allows one to 
+  recreate RadioGatún[32]’s test vectors.  `math.randomseed()` takes a 
   NULL-terminated string (*not* number) as a random seed (the seed can 
   not have ASCII NULLs in it).  If a number is given to 
   `math.randomseed()`, Lua’s coercion converts it in to a string.
+* The RadioGatun[32]-based `math.random()` routines can also be called
+  with `rg32` aliases: `rg32.randomseed()`, `rg32.random()`, and 
+  `rg32.rand16()`.  This allows one to use Lunacy’s random number
+  generator via a third party library in stock Lua; Lunacy-compatible
+  libraries for stock Lua are at https://github.com/samboy/LUAlibs
 * This code does not support runtime loading of dynamic libraries.
 * The luafilesystem suite is built in.  Not everything works, but basic
   directory and file traversal are present.
 * `bit32` libs, based on the Lua 5.2 and Lua 5.3 API, are here for bit
   manipulation.
 * A module by Steve Donovan called `spawner` is here so we can have a 
-  version of Python’s old `popen2` in Luancy.
+  version of Python’s old `popen2` in Luancy.  For users of stock Lua,
+  this library for Lua is available at https://github.com/samboy/LUAlibs
 
 # SipHash
 
