@@ -106,6 +106,8 @@ Freely available under the terms of the
 <LI><A HREF="#5.8">5.8 &ndash; Operating System Facilities</A>
 <LI><A HREF="#5.9">5.9 &ndash; The Debug Library</A>
 <LI><A HREF="#5.10">5.10 &ndash; Bitwise Operations</A>
+<LI><A HREF="#5.11">5.11 &ndash; Spawner</A>
+<LI><A HREF="#5.12">5.12 &ndash; lfs</A>
 </UL>
 <P>
 <LI><A HREF="#6">6 &ndash; Lua Stand-alone</A>
@@ -237,13 +239,13 @@ Freely available under the terms of the
 <A HREF="#pdf-math.pi">math.pi</A><BR>
 <A HREF="#pdf-math.pow">math.pow</A><BR>
 <A HREF="#pdf-math.rad">math.rad</A><BR>
-<A HREF="#pdf-math.random">math.random</A><BR>
-<A HREF="#pdf-math.randomseed">math.randomseed</A><BR>
 <A HREF="#pdf-math.sin">math.sin</A><BR>
 <A HREF="#pdf-math.sinh">math.sinh</A><BR>
 <A HREF="#pdf-math.sqrt">math.sqrt</A><BR>
 <A HREF="#pdf-math.tan">math.tan</A><BR>
 <A HREF="#pdf-math.tanh">math.tanh</A><BR>
+<A HREF="#pdf-math.random">math.random</A><BR>
+<A HREF="#pdf-math.randomseed">math.randomseed</A><BR>
 <P>
 
 <A HREF="#pdf-os.clock">os.clock</A><BR>
@@ -266,6 +268,10 @@ Freely available under the terms of the
 <A HREF="#pdf-package.path">package.path</A><BR>
 <A HREF="#pdf-package.preload">package.preload</A><BR>
 <A HREF="#pdf-package.seeall">package.seeall</A><BR>
+<P>
+
+<A HREF="#pdf-spawner.popen2">spawner.popen2</A></BR>
+<A HREF="#pdf-spawner.popen">spawner.popen</A></BR>
 <P>
 
 <A HREF="#pdf-string.byte">string.byte</A><BR>
@@ -517,23 +523,8 @@ Windows or have Y2038 issues.
 
 <p>
 
-In addition, some of the bit32 lib has been added.  Note that the bit32
-lib is currently unstable; its API and results may change in 
-future versions of Lunacy, and it may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is Lua 5.2+ bit32
-compatibility.
-
-<p>
-
-Right now:
-
-<p>
-
-<code>= bit32.arshift(-1,1) -- returns 4294967295</code><p>
-<code>= bit32.bnot(0) -- returns 4294967295</code><p>
-<code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
-<code>= bit32.lshift(1,32) -- returns 0</code><p>
-<code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
+In addition, some of the bit32 lib has been added, in a manner which
+appears Lua 5.2/5.3 compatible.
 
 <p>
 
@@ -8042,60 +8033,6 @@ Returns the angle <code>x</code> (given in degrees) in radians.
 
 
 <p>
-<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
-
-
-<p>
-This uses the RadioGatun[32] algorithm to generate high quality
-pseudo-random numbers.
-
-<p>
-When called without arguments,
-returns a uniform pseudo-random real number
-in the range <em>[0,1)</em>.  
-When called with an integer number <code>m</code>,
-<code>math.random</code> returns
-a uniform pseudo-random integer in the range <em>[1, m]</em>.
-When called with two integer numbers <code>m</code> and <code>n</code>,
-<code>math.random</code> returns a uniform pseudo-random
-integer in the range <em>[m, n]</em>.
-
-<p>
-It is also possible to use <code>math.rand16</code> to generate
-pseudo-random numbers between 0 and 65535.
-
-<p>
-<code>math.random()</code> may also be called as <code>rg32.random()</code>; 
-<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
-These names are aliases to allow stock Lua to load <code>rg32</code>
-as a third party library and generate the same random numbers as Lunacy.
-Indeed, the <code>rg32</code> functions use the same random state
-as the <code>math.random()</code> functions.
-
-<p>
-<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
-
-Sets <code>x</code> as the "seed"
-for the pseudo-random generator:
-equal seeds produce equal sequences of numbers.  
-
-<p>
-
-Note that the value x is a <i>string</i>, not a number.
-The string is a text, not binary, string: The seed can
-not have ASCII NULLs in it; any other character (including
-UTF-8 hi-bit characters) is allowed.
-
-<p>
-
-If a number is given to <code>randomseed</code>, Lua
-converts the number in to a string before seeding
-the random state.
-
-<p>
-<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
-
-<p>
 <hr><h3><a name="pdf-math.sin"><code>math.sin (x)</code></a></h3>
 
 
@@ -8144,7 +8081,72 @@ Returns the tangent of <code>x</code> (assumed to be in radians).
 Returns the hyperbolic tangent of <code>x</code>.
 
 
+<p>
+<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
 
+
+<p>
+This uses the RadioGatun[32] algorithm to generate high quality
+pseudo-random numbers.
+
+<p>
+When called without arguments,
+returns a uniform pseudo-random real number
+in the range <em>[0,1)</em>.  
+When called with an integer number <code>m</code>,
+<code>math.random</code> returns
+a uniform pseudo-random integer in the range <em>[1, m]</em>.
+When called with two integer numbers <code>m</code> and <code>n</code>,
+<code>math.random</code> returns a uniform pseudo-random
+integer in the range <em>[m, n]</em>.
+
+<p>
+It is also possible to use <code>math.rand16()</code> to generate
+pseudo-random numbers between 0 and 65535.  This function is here
+so that the random number library can, if needed, make the same numbers
+as the official RadioGatún[32] test vectors.
+
+<p>
+<code>math.random()</code> may also be called as <code>rg32.random()</code>; 
+<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
+These names are aliases to allow stock Lua to load <code>rg32</code>
+as a third party library and generate the same random numbers as Lunacy.
+Indeed, the <code>rg32</code> functions use the same random state
+as the <code>math.random()</code> functions.
+
+<p>
+The function <code>rg32.runmill()</code> is used for “proof of work”
+protocols, such as password hashing.  <code>rg32.runmill()</code>
+takes a single numeric argument: The number of work “units” we
+perform.  Each work unit is the amount of work needed to generate 64
+bits of pseudo-random numbers (64 bits is the same as four calls to
+<code>rg32.rand16()</code> or two calls to <code>rg32.random()</code>).
+For example, to call <code>rg32.runmill(100)</code> has the random number
+generator perform the work needed to make 6400 pseudo-random bits (400
+<code>rg32.rand16()</code> calls or 200 <code>rg32.random()</code> calls).
+
+<p>
+<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
+
+Sets <code>x</code> as the "seed"
+for the pseudo-random generator:
+equal seeds produce equal sequences of numbers.  
+
+<p>
+
+Note that the value x is a <i>string</i>, not a number.
+The string is a text, not binary, string: The seed can
+not have ASCII NULLs in it; any other character (including
+UTF-8 hi-bit characters) is allowed.
+
+<p>
+
+If a number is given to <code>randomseed</code>, Lua
+converts the number in to a string before seeding
+the random state.
+
+<p>
+<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
 
 
 
@@ -9004,13 +9006,6 @@ https://github.com/LuaDist/bitlib/
 
 <p>
 
-Note that the bit32
-lib is currently unstable; its API and results may change in
-future versions of Lunacy, and may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is to be Lua 5.2+ compatible.
-
-<p>
-
 Some examples:
 
 <p>
@@ -9101,6 +9096,108 @@ the right is <code>0x07ffffff</code>.
 <p>
 Returns the number <code>x</code> rotated <code>disp</code> bits to the right.
 This is a 32-bit rotate.
+
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.11 &ndash; <a name="5.11">Spawner</a></h2>
+
+<p>
+
+This library provides the ability to have Lunacy open up two-way pipes
+with sub processes.  In other words, it allows Lunacy to spawn a child
+process, and to be able to send data to the sub-process’s standard input
+while readint the sub-process’s standard output.
+
+<p>
+
+This is a reasonably simply sub-process generator, and its 
+<code>read()</code> call will hang if the sub-process does not have
+any output for Lunacy to read.  There are other corner cases where
+the code may cause things to hang, but the code works quite nicely
+as long as the sub-process is reasonably cooperative.
+
+<p>
+
+The code has both a native Windows and
+a POSIX-compatible library with the same API.
+
+<p>
+
+Example usage:  Here, <code>wc</code> is a standard *NIX command which
+reads data from the standard input, and outputs the number of words and
+lines in the input data after the input pipe is closed.
+
+<pre>
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen2"><code>spawner.popen2 (command)</code></a></h3>
+
+<code>spawner.popen2()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns two values:
+
+<ul>
+<li>A handle which we can write to (the first return value)
+<li>A handle which we can read from (the second return value).
+</ul>
+
+With the write handle, we can flush the write buffer by using the 
+<code>flush</code> method.  We can also close the sub-process’s standard
+input by using the <code>close</code> method on the write handle.
+It is possible to abruptly terminate the sub-process by using the
+<code>kill</code> method, but this sends a hard kill signal and does
+not allow the sub-process to gracefully terminate.
+
+<p>
+
+As long as the write handle is open, we can use the <code>write</code>
+method (which takes a string with the data to write to the sub-process
+as its only argument).
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen"><code>spawner.popen (command)</code></a></h3>
+
+<code>spawner.popen()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns one value,
+a handle which we can read from.
+
+<p>
+Running <code>spawner.popen()</code> is equivalent to running
+<code>spawner.popen2()</code> then immediately closing the
+write handle.  It is similar to <code>io.popen(command, "r")</code>,
+where <i>command</i> is the argument given to <code>spawner.popen()</code>,
+but may be useful if <code>io.popen()</code> is having issues.
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.12 &ndash; <a name="5.12">lfs</a></h2>
+
+Lunacy includes a partial port of the luafilesystem library.  This
+allows for basic directory traversal in Lunacy scripts.
+
+Example usage:
+
+<pre>
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+</pre>
+
+Note that only the calls
+<code>lfs.attributes</code>, <code>lfs.chdir</code>,
+<code>lfs.currentdir</code>, <code>lfs.dir</code>,
+<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
+<code>lfs.symlinkattributes</code> are included.  The only
+file attributes are <code>size</code>, <code>mode</code>, and
+<code>nlink</code>; other attributes return nonsense values in
+Windows or have Y2038 issues.
 
 <p><A HREF="#contents">Contents</A>
 
