@@ -7759,13 +7759,20 @@ Returns the tangent of <code>x</code> (assumed to be in radians).
 <p>
 Returns the hyperbolic tangent of <code>x</code>.
 
+<h3>5.6.1 - <a name="5.6.1">Random number generation</a></h3>
+
+Lunacy uses the RadioGatun[32] algorithm to generate high quality
+pseudo-random numbers.  
+
+Example code:
+
+<code>
+math.randomseed(os.time())
+print("The 20-sided dice roll is ",math.random(1,20))
+</code>
+
 <p>
 <hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
-
-
-<p>
-This uses the RadioGatun[32] algorithm to generate high quality
-pseudo-random numbers.
 
 <p>
 When called without arguments,
@@ -7779,18 +7786,33 @@ When called with two integer numbers <code>m</code> and <code>n</code>,
 integer in the range <em>[m, n]</em>.
 
 <p>
-It is also possible to use <code>math.rand16()</code> to generate
+<code>math.random</code> may also be invoked as <code>rg32.random</code>.
+The rg32 names are aliases to allow stock Lua to load <code>rg32</code>
+as a third party library and generate the same random numbers as Lunacy.
+Indeed, the <code>rg32</code> functions use the same random state
+as the <code>math.random()</code> functions.
+
+<p>
+<hr><h3><a name="pdf-math.rand16"><code>math.rand16 ([m [, n]])</code></a></h3>
+
+<p>
+<code>math.rand16()</code> can be used to generate
 pseudo-random numbers between 0 and 65535.  This function is here
 so that the random number library can, if needed, make the same numbers
 as the official RadioGatún[32] test vectors.
 
 <p>
-<code>math.random()</code> may also be called as <code>rg32.random()</code>; 
 <code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
-These names are aliases to allow stock Lua to load <code>rg32</code>
-as a third party library and generate the same random numbers as Lunacy.
-Indeed, the <code>rg32</code> functions use the same random state
-as the <code>math.random()</code> functions.
+
+<p>
+<hr><h3><a name="pdf-rg32.runmill"><code>rg32.runmill ([m [, n]])</code></a></h3>
+
+<p>
+This particular routine does <i>not</i> have a “math” alias because
+this should only be used if someone understands the risks and benefits
+of using this routine for security purposes.  For example, if one is
+hashing passwords, there are a number of standard password hashing 
+routines such as Argon2 which should be considered.
 
 <p>
 The function <code>rg32.runmill()</code> is used for “proof of work”
@@ -7806,9 +7828,15 @@ generator perform the work needed to make 6400 pseudo-random bits (400
 <p>
 <hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
 
+<p>
 Sets <code>x</code> as the "seed"
 for the pseudo-random generator:
 equal seeds produce equal sequences of numbers.  
+
+<p>
+If <code>math.random</code> is called without <code>math.randomseed</code>
+being called first, the default seed “1234” (without the quotes) will be
+used.
 
 <p>
 
@@ -7825,8 +7853,6 @@ the random state.
 
 <p>
 <code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
-
-
 
 
 
