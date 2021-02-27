@@ -7711,62 +7711,6 @@ Returns <em>x<sup>y</sup></em>.
 Returns the angle <code>x</code> (given in degrees) in radians.
 
 
-
-
-<p>
-<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
-
-
-<p>
-This uses the RadioGatun[32] algorithm to generate high quality
-pseudo-random numbers.
-
-<p>
-When called without arguments,
-returns a uniform pseudo-random real number
-in the range <em>[0,1)</em>.  
-When called with an integer number <code>m</code>,
-<code>math.random</code> returns
-a uniform pseudo-random integer in the range <em>[1, m]</em>.
-When called with two integer numbers <code>m</code> and <code>n</code>,
-<code>math.random</code> returns a uniform pseudo-random
-integer in the range <em>[m, n]</em>.
-
-<p>
-It is also possible to use <code>math.rand16</code> to generate
-pseudo-random numbers between 0 and 65535.
-
-<p>
-<code>math.random()</code> may also be called as <code>rg32.random()</code>;
-<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.
-These names are aliases to allow stock Lua to load <code>rg32</code>
-as a third party library and generate the same random numbers as Lunacy.
-Indeed, the <code>rg32</code> functions use the same random state
-as the <code>math.random()</code> functions.
-
-<p>
-<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
-
-Sets <code>x</code> as the "seed"
-for the pseudo-random generator:
-equal seeds produce equal sequences of numbers.  
-
-<p>
-
-Note that the value x is a <i>string</i>, not a number.
-The string is a text, not binary, string: The seed can
-not have ASCII NULLs in it; any other character (including
-UTF-8 hi-bit characters) is allowed.
-
-<p>
-
-If a number is given to <code>randomseed</code>, Lua
-converts the number in to a string before seeding
-the random state.
-
-<p>
-<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
-
 <p>
 <hr><h3><a name="pdf-math.sin"><code>math.sin (x)</code></a></h3>
 
@@ -7815,6 +7759,72 @@ Returns the tangent of <code>x</code> (assumed to be in radians).
 <p>
 Returns the hyperbolic tangent of <code>x</code>.
 
+<p>
+<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
+
+
+<p>
+This uses the RadioGatun[32] algorithm to generate high quality
+pseudo-random numbers.
+
+<p>
+When called without arguments,
+returns a uniform pseudo-random real number
+in the range <em>[0,1)</em>.  
+When called with an integer number <code>m</code>,
+<code>math.random</code> returns
+a uniform pseudo-random integer in the range <em>[1, m]</em>.
+When called with two integer numbers <code>m</code> and <code>n</code>,
+<code>math.random</code> returns a uniform pseudo-random
+integer in the range <em>[m, n]</em>.
+
+<p>
+It is also possible to use <code>math.rand16()</code> to generate
+pseudo-random numbers between 0 and 65535.  This function is here
+so that the random number library can, if needed, make the same numbers
+as the official RadioGatún[32] test vectors.
+
+<p>
+<code>math.random()</code> may also be called as <code>rg32.random()</code>; 
+<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
+These names are aliases to allow stock Lua to load <code>rg32</code>
+as a third party library and generate the same random numbers as Lunacy.
+Indeed, the <code>rg32</code> functions use the same random state
+as the <code>math.random()</code> functions.
+
+<p>
+The function <code>rg32.runmill()</code> is used for “proof of work”
+protocols, such as password hashing.  <code>rg32.runmill()</code>
+takes a single numeric argument: The number of work “units” we
+perform.  Each work unit is the amount of work needed to generate 64
+bits of pseudo-random numbers (64 bits is the same as four calls to
+<code>rg32.rand16()</code> or two calls to <code>rg32.random()</code>).
+For example, to call <code>rg32.runmill(100)</code> has the random number
+generator perform the work needed to make 6400 pseudo-random bits (400
+<code>rg32.rand16()</code> calls or 200 <code>rg32.random()</code> calls).
+
+<p>
+<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
+
+Sets <code>x</code> as the "seed"
+for the pseudo-random generator:
+equal seeds produce equal sequences of numbers.  
+
+<p>
+
+Note that the value x is a <i>string</i>, not a number.
+The string is a text, not binary, string: The seed can
+not have ASCII NULLs in it; any other character (including
+UTF-8 hi-bit characters) is allowed.
+
+<p>
+
+If a number is given to <code>randomseed</code>, Lua
+converts the number in to a string before seeding
+the random state.
+
+<p>
+<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
 
 
 
