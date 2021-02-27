@@ -1,6 +1,6 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-21)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-22)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
@@ -63,10 +63,13 @@ Contents
                o 5.4.1 – Patterns
           + 5.5 – Table Manipulation
           + 5.6 – Mathematical Functions
+               o 5.6.1 – Random number generation
           + 5.7 – Input and Output Facilities
           + 5.8 – Operating System Facilities
           + 5.9 – The Debug Library
           + 5.10 – Bitwise Operations
+          + 5.11 – Spawner
+          + 5.12 – lfs
      * 6 – Lua Stand-alone
      * 7 – Incompatibilities with the Previous Version
           + 7.1 – Changes in the Language
@@ -188,6 +191,7 @@ Index
    math.pi
    math.pow
    math.rad
+   math.rand16
    math.random
    math.randomseed
    math.sin
@@ -215,6 +219,14 @@ Index
    package.path
    package.preload
    package.seeall
+
+   rg32.rand16
+   rg32.random
+   rg32.runmill
+   rg32.randomseed
+
+   spawner.popen2
+   spawner.popen
 
    string.byte
    string.char
@@ -434,22 +446,8 @@ end
    The only file attributes are size, mode, and nlink; other attributes
    return nonsense values in Windows or have Y2038 issues.
 
-   In addition, some of the bit32 lib has been added. Note that the bit32
-   lib is currently unstable; its API and results may change in future
-   versions of Lunacy, and it may not be 100% compatible with the bit32
-   lib in Lua 5.2+. Its goal is Lua 5.2+ bit32 compatibility.
-
-   Right now:
-
-   = bit32.arshift(-1,1) -- returns 4294967295
-
-   = bit32.bnot(0) -- returns 4294967295
-
-   = bit32.lshift(1,31) -- returns 2147483648
-
-   = bit32.lshift(1,32) -- returns 0
-
-   = bit32.rrotate(1,2) -- returns 1073741824
+   In addition, some of the bit32 lib has been added, in a manner which
+   appears Lua 5.2/5.3 compatible.
 
    For security reasons, Lunacy uses a variant of SipHash as the string
    hash compression function. The variant used is “HalfSipHash-1-3”, the
@@ -5101,42 +5099,6 @@ void luaL_where (lua_State *L, int lvl);
    Returns the angle x (given in degrees) in radians.
      __________________________________________________________________
 
-  math.random ([m [, n]])
-
-   This uses the RadioGatun[32] algorithm to generate high quality
-   pseudo-random numbers.
-
-   When called without arguments, returns a uniform pseudo-random real
-   number in the range [0,1). When called with an integer number m,
-   math.random returns a uniform pseudo-random integer in the range [1,
-   m]. When called with two integer numbers m and n, math.random returns a
-   uniform pseudo-random integer in the range [m, n].
-
-   It is also possible to use math.rand16 to generate pseudo-random
-   numbers between 0 and 65535.
-
-   math.random() may also be called as rg32.random(); math.rand16() may be
-   called as rg32.rand16(). These names are aliases to allow stock Lua to
-   load rg32 as a third party library and generate the same random numbers
-   as Lunacy. Indeed, the rg32 functions use the same random state as the
-   math.random() functions.
-     __________________________________________________________________
-
-  math.randomseed (x)
-
-   Sets x as the "seed" for the pseudo-random generator: equal seeds
-   produce equal sequences of numbers.
-
-   Note that the value x is a string, not a number. The string is a text,
-   not binary, string: The seed can not have ASCII NULLs in it; any other
-   character (including UTF-8 hi-bit characters) is allowed.
-
-   If a number is given to randomseed, Lua converts the number in to a
-   string before seeding the random state.
-
-   math.randomseed() has the alias rg32.randomseed().
-     __________________________________________________________________
-
   math.sin (x)
 
    Returns the sine of x (assumed to be in radians).
@@ -5161,6 +5123,73 @@ void luaL_where (lua_State *L, int lvl);
   math.tanh (x)
 
    Returns the hyperbolic tangent of x.
+
+  5.6.1 - Random number generation
+
+   Lunacy uses the RadioGatun[32] algorithm to generate high quality
+   pseudo-random numbers. Example code:
+math.randomseed(os.time())
+print("The 20-sided dice roll is ",math.random(1,20))
+     __________________________________________________________________
+
+  math.random ([m [, n]])
+
+   When called without arguments, returns a uniform pseudo-random real
+   number in the range [0,1). When called with an integer number m,
+   math.random returns a uniform pseudo-random integer in the range [1,
+   m]. When called with two integer numbers m and n, math.random returns a
+   uniform pseudo-random integer in the range [m, n].
+
+   math.random may also be invoked as rg32.random. The rg32 names are
+   aliases to allow stock Lua to load rg32 as a third party library and
+   generate the same random numbers as Lunacy. Indeed, the rg32 functions
+   use the same random state as the math.random() functions.
+     __________________________________________________________________
+
+  math.rand16 ()
+
+   math.rand16() can be used to generate pseudo-random numbers between 0
+   and 65535. This function is here so that the random number library can,
+   if needed, make the same numbers as the official RadioGatún[32] test
+   vectors.
+
+   math.rand16() may be called as rg32.rand16().
+     __________________________________________________________________
+
+  rg32.runmill (work)
+
+   This particular routine does not have a “math” alias because this
+   should only be used if someone understands the risks and benefits of
+   using this routine for security purposes. For example, if one is
+   hashing passwords, there are a number of standard password hashing
+   routines such as Argon2 which should be considered.
+
+   The function rg32.runmill() is used for “proof of work” protocols, such
+   as password hashing. rg32.runmill() takes a single numeric argument:
+   The number of work “units” we perform. Each work unit is the amount of
+   work needed to generate 64 bits of pseudo-random numbers (64 bits is
+   the same as four calls to rg32.rand16() or two calls to rg32.random()).
+   For example, to call rg32.runmill(100) has the random number generator
+   perform the work needed to make 6400 pseudo-random bits (400
+   rg32.rand16() calls or 200 rg32.random() calls).
+     __________________________________________________________________
+
+  math.randomseed (x)
+
+   Sets x as the "seed" for the pseudo-random generator: equal seeds
+   produce equal sequences of numbers.
+
+   If math.random is called without math.randomseed being called first,
+   the default seed “1234” (without the quotes) will be used.
+
+   Note that the value x is a string, not a number. The string is a text,
+   not binary, string: The seed can not have ASCII NULLs in it; any other
+   character (including UTF-8 hi-bit characters) is allowed.
+
+   If a number is given to randomseed, Lua converts the number in to a
+   string before seeding the random state.
+
+   math.randomseed() has the alias rg32.randomseed().
 
    Contents
 
@@ -5449,7 +5478,7 @@ void luaL_where (lua_State *L, int lvl);
    on 64-bit UNIX and compatible systems.
 
    os.time is designed to generate a correct timestamp on 32-bit UNIX
-   compatible systems until after 2100.
+   compatible systems until around 2100.
 
    While the Lua version of this call can accept a table as an argument,
    the Lunacy version of this call accepts no arguments, and always
@@ -5639,10 +5668,6 @@ void luaL_where (lua_State *L, int lvl);
    inside the table bit32. These operations come from
    https://github.com/LuaDist/bitlib/
 
-   Note that the bit32 lib is currently unstable; its API and results may
-   change in future versions of Lunacy, and may not be 100% compatible
-   with the bit32 lib in Lua 5.2+. Its goal is to be Lua 5.2+ compatible.
-
    Some examples:
 
    = bit32.arshift(-1,1) -- returns 4294967295
@@ -5706,6 +5731,82 @@ void luaL_where (lua_State *L, int lvl);
 
    Returns the number x rotated disp bits to the right. This is a 32-bit
    rotate.
+
+   Contents
+
+5.11 – Spawner
+
+   This library provides the ability to have Lunacy open up two-way pipes
+   with sub processes. In other words, it allows Lunacy to spawn a child
+   process, and to be able to send data to the sub-process’s standard
+   input while reading the sub-process’s standard output.
+
+   This is a reasonably simple sub-process generator, and its read() call
+   will hang if the sub-process does not have any output for Lunacy to
+   read. There are other corner cases where the code may cause things to
+   hang, but the code works quite nicely as long as the sub-process is
+   reasonably cooperative.
+
+   The code has both a native Windows and a POSIX-compatible library with
+   the same API.
+
+   Example usage: Here, wc is a standard *NIX command which reads data
+   from the standard input, and outputs the number of words and lines in
+   the input data after the input pipe is closed.
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+     __________________________________________________________________
+
+  spawner.popen2 (command)
+
+   spawner.popen2() takes a single argument: The name of the sub-process
+   command we wish to execute. It returns two values:
+     * A handle which we can write to (the first return value)
+     * A handle which we can read from (the second return value).
+
+   With the write handle, we can flush the write buffer by using the flush
+   method. We can also close the sub-process’s standard input by using the
+   close method on the write handle. It is possible to abruptly terminate
+   the sub-process by using the kill method, but this sends a hard kill
+   signal and does not allow the sub-process to gracefully terminate.
+
+   As long as the write handle is open, we can use the write method (which
+   takes a string with the data to write to the sub-process as its only
+   argument).
+     __________________________________________________________________
+
+  spawner.popen (command)
+
+   spawner.popen() takes a single argument: The name of the sub-process
+   command we wish to execute. It returns one value, a handle which we can
+   read from.
+
+   Running spawner.popen() is equivalent to running spawner.popen2() then
+   immediately closing the write handle. It is similar to
+   io.popen(command, "r"), where command is the argument given to
+   spawner.popen(), but may be useful if io.popen() is having issues.
+
+   Contents
+
+5.12 – lfs
+
+   Lunacy includes a partial port of the luafilesystem library. This
+   allows for basic directory traversal in Lunacy scripts. Example usage:
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+
+   Note that only the calls lfs.attributes, lfs.chdir, lfs.currentdir,
+   lfs.dir, lfs.mkdir, lfs.rmdir, and lfs.symlinkattributes are included.
+   The only file attributes are size, mode, and nlink; other attributes
+   return nonsense values in Windows or have Y2038 issues.
+
+   luafilesystem is fully documented at
+   https://keplerproject.github.io/luafilesystem/.
 
    Contents
 
@@ -5919,4 +6020,4 @@ void luaL_where (lua_State *L, int lvl);
 
      __________________________________________________________________
 
-   Last update: Sun Feb 21 2021
+   Last update: Sat Feb 27 2021
