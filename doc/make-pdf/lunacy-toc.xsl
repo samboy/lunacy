@@ -9,7 +9,7 @@
   <xsl:template match="outline:outline">
     <html>
       <head>
-        <title>Lunacy (Lua 5.1) 2021-02-15 Reference</title>
+        <title>Lunacy (Lua 5.1) 2021-02-22 Reference</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <style>
           h1 {
@@ -32,7 +32,7 @@
         </style>
       </head>
       <body>
-<h1>Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-15)</h1>
+<h1>Lunacy (Lua) 5.1 Reference Manual (Release 2021-02-22)</h1>
         <ul><xsl:apply-templates select="outline:item/outline:item"/></ul>
       </body>
     </html>
