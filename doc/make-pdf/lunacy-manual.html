@@ -205,23 +205,8 @@ Windows or have Y2038 issues.
 
 <p>
 
-In addition, some of the bit32 lib has been added.  Note that the bit32
-lib is currently unstable; its API and results may change in 
-future versions of Lunacy, and it may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is Lua 5.2+ bit32
-compatibility.
-
-<p>
-
-Right now:
-
-<p>
-
-<code>= bit32.arshift(-1,1) -- returns 4294967295</code><p>
-<code>= bit32.bnot(0) -- returns 4294967295</code><p>
-<code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
-<code>= bit32.lshift(1,32) -- returns 0</code><p>
-<code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
+In addition, some of the bit32 lib has been added, in a manner which
+appears Lua 5.2/5.3 compatible.
 
 <p>
 
@@ -8690,13 +8675,6 @@ https://github.com/LuaDist/bitlib/
 
 <p>
 
-Note that the bit32
-lib is currently unstable; its API and results may change in
-future versions of Lunacy, and may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is to be Lua 5.2+ compatible.
-
-<p>
-
 Some examples:
 
 <p>
@@ -8787,6 +8765,108 @@ the right is <code>0x07ffffff</code>.
 <p>
 Returns the number <code>x</code> rotated <code>disp</code> bits to the right.
 This is a 32-bit rotate.
+
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.11 &ndash; <a name="5.11">Spawner</a></h2>
+
+<p>
+
+This library provides the ability to have Lunacy open up two-way pipes
+with sub processes.  In other words, it allows Lunacy to spawn a child
+process, and to be able to send data to the sub-process’s standard input
+while readint the sub-process’s standard output.
+
+<p>
+
+This is a reasonably simply sub-process generator, and its 
+<code>read()</code> call will hang if the sub-process does not have
+any output for Lunacy to read.  There are other corner cases where
+the code may cause things to hang, but the code works quite nicely
+as long as the sub-process is reasonably cooperative.
+
+<p>
+
+The code has both a native Windows and
+a POSIX-compatible library with the same API.
+
+<p>
+
+Example usage:  Here, <code>wc</code> is a standard *NIX command which
+reads data from the standard input, and outputs the number of words and
+lines in the input data after the input pipe is closed.
+
+<pre>
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen2"><code>spawner.popen2 (command)</code></a></h3>
+
+<code>spawner.popen2()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns two values:
+
+<ul>
+<li>A handle which we can write to (the first return value)
+<li>A handle which we can read from (the second return value).
+</ul>
+
+With the write handle, we can flush the write buffer by using the 
+<code>flush</code> method.  We can also close the sub-process’s standard
+input by using the <code>close</code> method on the write handle.
+It is possible to abruptly terminate the sub-process by using the
+<code>kill</code> method, but this sends a hard kill signal and does
+not allow the sub-process to gracefully terminate.
+
+<p>
+
+As long as the write handle is open, we can use the <code>write</code>
+method (which takes a string with the data to write to the sub-process
+as its only argument).
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen"><code>spawner.popen (command)</code></a></h3>
+
+<code>spawner.popen()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns one value,
+a handle which we can read from.
+
+<p>
+Running <code>spawner.popen()</code> is equivalent to running
+<code>spawner.popen2()</code> then immediately closing the
+write handle.  It is similar to <code>io.popen(command, "r")</code>,
+where <i>command</i> is the argument given to <code>spawner.popen()</code>,
+but may be useful if <code>io.popen()</code> is having issues.
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.12 &ndash; <a name="5.12">lfs</a></h2>
+
+Lunacy includes a partial port of the luafilesystem library.  This
+allows for basic directory traversal in Lunacy scripts.
+
+Example usage:
+
+<pre>
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+</pre>
+
+Note that only the calls
+<code>lfs.attributes</code>, <code>lfs.chdir</code>,
+<code>lfs.currentdir</code>, <code>lfs.dir</code>,
+<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
+<code>lfs.symlinkattributes</code> are included.  The only
+file attributes are <code>size</code>, <code>mode</code>, and
+<code>nlink</code>; other attributes return nonsense values in
+Windows or have Y2038 issues.
 
 <p><A HREF="#contents">Contents</A>
 
