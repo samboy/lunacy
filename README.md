@@ -45,6 +45,29 @@ compiles and runs in Linux (CentOS 7 64-bit).
   version of Python’s old `popen2` in Luancy.  For users of stock Lua,
   this library for Lua is available at https://github.com/samboy/LUAlibs
 
+# Changelog
+
+* `2021-02-27` Documentation update for Lunacy 2021-02-22.  `spawner` now
+  has documentation; `rg32` random number routines (also with `math` 
+  aliases) are now fully documented.  Basic documentation for `lfs` with
+  point to full documentation added.  Lunacy code unchanged.
+* `2021-02-22` `rg32.runmill` added to code; Lunacy date updated.
+* `2021-02-21` Add `rg32.randomseed`, `rg32.random`, and `rg32.rand16`
+  aliases for `math.random`, `math.randomseed`, and `math.rand16`.  This
+  allows one to write code using the same random number generator in
+  both Lunacy and stock Lua with the libs available at 
+  https://github.com/samboy/LUAlibs
+* `2021-02-15` Add `spawner` routines that allow Lunacy to have two-way
+  pipes (both reading and writing) with child processes.
+* `2020-12-06` Restore simple `os.time()` (numeric *NIX timestamp) routine
+  which uses a Y2038-compatible Windows API (filetime), full Y2038 support 
+  when `time_t` is 64-bit (i.e. most modern *NIX OSes), and support until 
+  around 2100 if `time_t` is 32-bit (when time_t is negative, we add 
+  2^32 seconds to the time).
+* `2020-08-12` Lunacy now uses HalfSipHash-1-3 for hash compression.  
+  While slightly slower than Lua’s default hash compressor, it protects us
+  from hash flooding denial of service attacks.
+
 # SipHash
 
 Lunacy, by default, uses HalfSipHash-1-3 as its hash compression
