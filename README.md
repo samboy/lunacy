@@ -50,7 +50,7 @@ compiles and runs in Linux (CentOS 7 64-bit).
 * `2021-02-27` Documentation update for Lunacy 2021-02-22.  `spawner` now
   has documentation; `rg32` random number routines (also with `math` 
   aliases) are now fully documented.  Basic documentation for `lfs` with
-  point to full documentation added.  Lunacy code unchanged.
+  pointer to full documentation added.  Lunacy code unchanged.
 * `2021-02-22` `rg32.runmill` added to code; Lunacy date updated.
 * `2021-02-21` Add `rg32.randomseed`, `rg32.random`, and `rg32.rand16`
   aliases for `math.random`, `math.randomseed`, and `math.rand16`.  This
