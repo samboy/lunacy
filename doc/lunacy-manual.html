@@ -9236,6 +9236,79 @@ file attributes are <code>size</code>, <code>mode</code>, and
 Windows or have Y2038 issues.
 
 <p>
+<hr><h3><a 
+name="pdf-lfs.attributes"><code>lfs.attributes (filename)</code></a></h3>
+
+<code>lfs.attributes(filename)</code> returns information about a given
+directory entry.  In particular, it returns a table with three entries:
+
+<ul>
+<li><code>size</code>, the size of the file in bytes
+<li><code>mode</code>, what kind of file it is (string value).  Possible
+    values are “file”, “directory”, “link”, “socket”, “named pipe”,
+    “char device”, “block device”, and “other”.
+<li><code>nlink</code>, the number of hard links to a given file.  This
+    will usually be 1; if this is not one, it indicates that there this
+    file has a <i>hard link</i>, i.e. the file has multiple pointers
+    to it on the file system.
+</ul>
+
+<p>
+
+Should the filename point to a non-existant entry, 
+<code>lfs.attributes</code> will return nil, and the subsequent return 
+values should indicate the error conditions.
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.chdir"><code>lfs.chdir (dir)</code></a></h3>
+
+Change the current working directory for the Lunacy process to the
+directory pointed to by “dir”.  This is akin to running the “cd”
+command.  The exact format of “dir” is OS-dependent.
+
+<p>
+This function will return true if successful, nil if not.
+
+<p>
+Example usage:
+
+<pre>
+lfs.chdir("..")
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.currentdir"><code>lfs.currentdir ()</code></a></h3>
+
+This function returns a string indicating the current working directory.
+The format of the string is OS-dependent.
+
+<p>
+Example usage:
+
+<pre>
+print(lfs.currentdir())
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.dir"><code>lfs.dir (location)</code></a></h3>
+
+<code>lfs.dir</code> is an iterator function which, when put in a for
+loop, returns a series of strings, each string being a name of a file
+or directory in the folder pointed to by <code>location</code>.
+
+<p>
+For example, to list all of the files in the current directory:
+
+<pre>
+for a in lfs.dir(".") do
+  print(a)
+end
+</pre>
+
+<p>
 luafilesystem is fully documented at
 <a href="https://keplerproject.github.io/luafilesystem/"
 >https://keplerproject.github.io/luafilesystem/</a>.
