@@ -9240,7 +9240,8 @@ Windows or have Y2038 issues.
 name="pdf-lfs.attributes"><code>lfs.attributes (filename)</code></a></h3>
 
 <code>lfs.attributes(filename)</code> returns information about a given
-directory entry.  In particular, it returns a table with three entries:
+directory entry.  In particular, in Lunacy it returns a table with 
+only three entries:
 
 <ul>
 <li><code>size</code>, the size of the file in bytes
@@ -9268,13 +9269,17 @@ directory pointed to by “dir”.  This is akin to running the “cd”
 command.  The exact format of “dir” is OS-dependent.
 
 <p>
-This function will return true if successful, nil if not.
+This function will return true if successful, nil (and why in subsequent
+return values) if not.
 
 <p>
 Example usage:
 
 <pre>
-lfs.chdir("..")
+status, error = lfs.chdir("..")
+if not status then
+  print(error)
+end
 </pre>
 
 <p>
@@ -9305,6 +9310,41 @@ For example, to list all of the files in the current directory:
 <pre>
 for a in lfs.dir(".") do
   print(a)
+end
+</pre>
+
+<p>
+<hr><h3><a
+name="pdf-lfs.mkdir"><code>lfs.mkdir (path)</code></a></h3>
+
+Make a new empty directory at the location specified in path.  Returns
+true on success, nil (with reason in subsequent return value) on error.
+
+<p>
+Example usage:
+
+<pre>
+status, error = lfs.mkdir("foo")
+if not status then
+  print(error)
+end
+</pre>
+
+<p>
+<hr><h3><a
+name="pdf-lfs.rmdir"><code>lfs.rmdir (path)</code></a></h3>
+
+Remove the directory at the location specified in path.  This
+will return an error if the directory is not empty.  Returns
+true on success, nil (with reason in subsequent return value) on error.
+
+<p>
+Example usage:
+
+<pre>
+status, error = lfs.rmdir("foo")
+if not status then
+  print(error)
 end
 </pre>
 
