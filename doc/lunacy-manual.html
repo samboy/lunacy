@@ -9236,6 +9236,11 @@ file attributes are <code>size</code>, <code>mode</code>, and
 Windows or have Y2038 issues.
 
 <p>
+luafilesystem has a home page at
+<a href="https://keplerproject.github.io/luafilesystem/"
+>https://keplerproject.github.io/luafilesystem/</a>.
+
+<p>
 <hr><h3><a 
 name="pdf-lfs.attributes"><code>lfs.attributes (filename)</code></a></h3>
 
@@ -9349,9 +9354,14 @@ end
 </pre>
 
 <p>
-luafilesystem is fully documented at
-<a href="https://keplerproject.github.io/luafilesystem/"
->https://keplerproject.github.io/luafilesystem/</a>.
+<hr><h3><a 
+name="pdf-lfs.symlinkattributes"
+><code>lfs.symlinkattributes (filename)</code></a></h3>
+
+<code>lfs.symlinkattributes(filename)</code> works the same as 
+<code>lfs.attributes(filename)</code>, except that, if the file is
+a symbolic link, we return information about the symbolic link instead
+of information about the file or folder the symbolic link points to.
 
 <p><A HREF="#contents">Contents</A>
 
