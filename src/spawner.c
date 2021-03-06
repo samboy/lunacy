@@ -47,18 +47,18 @@ static char *quote_strtok(char *str, char str_delim)
 {
 // a specialized version of strtok() which treats quoted strings specially 
 // (used for handling command-line parms)
-    static char *tok;
-    if(str != NULL) tok = str;
+    static unsigned char *tok;
+    if(str != NULL) tok = (unsigned char *)str;
           
     while (*tok && isspace(*tok)) tok++;
     if (*tok == '\0') return NULL;
     
     if (*tok == str_delim) {       
        tok++;            // skip "
-       str = tok;
+       str = (char *)tok;
        while (*tok && *tok != str_delim) tok++;        
     } else {
-       str = tok;
+       str = (char *)tok;
        while (*tok && ! isspace(*tok)) tok++;
     }
     if (*tok) *tok++ = '\0';  
