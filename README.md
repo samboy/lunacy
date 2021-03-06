@@ -47,6 +47,9 @@ compiles and runs in Linux (CentOS 7 64-bit).
 
 # Changelog
 
+* `2021-03-06` Fully document `lfs` (luafilesystem) in Lunacy manual.
+  Remove spawner.c *NIX compile-time warnings.  Lunacy binary still at
+  2021-02-22.
 * `2021-02-27` Documentation update for Lunacy 2021-02-22.  `spawner` now
   has documentation; `rg32` random number routines (also with `math` 
   aliases) are now fully documented.  Basic documentation for `lfs` with
