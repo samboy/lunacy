@@ -31,6 +31,9 @@ print(r:read())
 #include <errno.h>
 #include <string.h>
 #include <glob.h>
+#include <ctype.h>
+#include <time.h>
+#include <signal.h>
 
 #include "lua.h"
 #include "lauxlib.h"
