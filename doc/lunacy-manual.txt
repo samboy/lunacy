@@ -168,6 +168,14 @@ Index
    io.type
    io.write
 
+   lfs.attributes
+   lfs.chdir
+   lfs.currentdir
+   lfs.dir
+   lfs.mkdir
+   lfs.rmdir
+   lfs.symlinkattributes
+
    math.abs
    math.acos
    math.asin
@@ -433,9 +441,7 @@ Index
    character; if it does, the string is truncated at the NUL character.
 
    Lunacy also includes a built in version of the commonly used
-   luafilesystem suite. Not everything works (I had issues with the
-   Windows code in luafilesystem for sym links), but it allows basic
-   directory traversal:
+   luafilesystem suite:
 for a in lfs.dir(".") do
   local b = lfs.attributes(a)
   print(a,b.mode)
@@ -5805,8 +5811,97 @@ end
    The only file attributes are size, mode, and nlink; other attributes
    return nonsense values in Windows or have Y2038 issues.
 
-   luafilesystem is fully documented at
+   luafilesystem has a home page at
    https://keplerproject.github.io/luafilesystem/.
+     __________________________________________________________________
+
+  lfs.attributes (filename)
+
+   lfs.attributes(filename) returns information about a given directory
+   entry. In particular, in Lunacy it returns a table with only three
+   entries:
+     * size, the size of the file in bytes
+     * mode, what kind of file it is (string value). Possible values are
+       “file”, “directory”, “link”, “socket”, “named pipe”, “char device”,
+       “block device”, and “other”.
+     * nlink, the number of hard links to a given file. This will usually
+       be 1; if this is not one, it indicates that there this file has a
+       hard link, i.e. the file has multiple pointers to it on the file
+       system.
+
+   Should the filename point to a non-existent entry, lfs.attributes will
+   return nil, and the subsequent return values should indicate the error
+   conditions.
+     __________________________________________________________________
+
+  lfs.chdir (dir)
+
+   Change the current working directory for the Lunacy process to the
+   directory pointed to by “dir”. This is akin to running the “cd”
+   command. The exact format of “dir” is OS-dependent.
+
+   This function will return true if successful, nil (and why in
+   subsequent return values) if not.
+
+   Example usage:
+status, error = lfs.chdir("..")
+if not status then
+  print(error)
+end
+     __________________________________________________________________
+
+  lfs.currentdir ()
+
+   This function returns a string indicating the current working
+   directory. The format of the string is OS-dependent.
+
+   Example usage:
+print(lfs.currentdir())
+     __________________________________________________________________
+
+  lfs.dir (location)
+
+   lfs.dir is an iterator function which, when put in a for loop, returns
+   a series of strings, each string being a name of a file or directory in
+   the folder pointed to by location.
+
+   For example, to list all of the files in the current directory:
+for a in lfs.dir(".") do
+  print(a)
+end
+     __________________________________________________________________
+
+  lfs.mkdir (path)
+
+   Make a new empty directory at the location specified in path. Returns
+   true on success, nil (with reason in subsequent return value) on error.
+
+   Example usage:
+status, error = lfs.mkdir("foo")
+if not status then
+  print(error)
+end
+     __________________________________________________________________
+
+  lfs.rmdir (path)
+
+   Remove the directory at the location specified in path. This will
+   return an error if the directory is not empty. Returns true on success,
+   nil (with reason in subsequent return value) on error.
+
+   Example usage:
+status, error = lfs.rmdir("foo")
+if not status then
+  print(error)
+end
+     __________________________________________________________________
+
+  lfs.symlinkattributes (filename)
+
+   lfs.symlinkattributes(filename) works the same as
+   lfs.attributes(filename), except that, if the file is a symbolic link,
+   we return information about the symbolic link instead of information
+   about the file or folder the symbolic link points to.
 
    Contents
 
@@ -6020,4 +6115,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Sat Feb 27 2021
+   Last update: Sat Mar 6 2021
