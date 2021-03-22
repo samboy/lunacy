@@ -55,6 +55,7 @@ and [Sourcehut](https://git.sr.ht/~samiam/Lunacy).
 
 # Changelog
 
+* `2021-03-22` Bugfix: `math.pi` returns pi again.
 * `2021-03-21` When run in terminal mode, if the first character in an
   expression is a number, we return the result of the expression.  In 
   other words, Lunacy now is a “quick and simple” desktop calculator:
