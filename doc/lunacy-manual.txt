@@ -82,7 +82,7 @@ Contents
                                 0 - Lunacy notes
 
    Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny
-   (109,568 byte) Windows 32-bit binary which is (as of 2020) Windows XP
+   (115,200 byte) Windows 32-bit binary which is (as of 2021) Windows XP
    and Windows 10 compatible.
 
    To make sure we don't have issues come January 19, 2038, os.clock(),
@@ -5797,4 +5797,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Sat Mar 6 2021
+   Last update: Sun Mar 21 2021
