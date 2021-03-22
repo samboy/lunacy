@@ -1,6 +1,6 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2021-03-21)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2021-03-22)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
@@ -5663,8 +5663,8 @@ end
    terminal.
 
    For calculations which do not start with a number, like
-   math.sin(3.141592653 / 4), “=” needs to be the first character, e.g. =
-   math.sin(3.141592653 / 4)
+   math.sin(math.pi / 4), “=” needs to be the first character, e.g. =
+   math.sin(math.pi / 4)
 
    Contents
 
@@ -5797,4 +5797,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Sun Mar 21 2021
+   Last update: Mon Mar 22 2021
