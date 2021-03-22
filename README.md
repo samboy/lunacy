@@ -44,9 +44,20 @@ compiles and runs in Linux (CentOS 7 64-bit).
 * A module by Steve Donovan called `spawner` is here so we can have a 
   version of Python’s old `popen2` in Luancy.  For users of stock Lua,
   this library for Lua is available at https://github.com/samboy/LUAlibs
+* It is now possible to have Lunacy, when run in terminal mode,
+  return the result of any expression which starts with a number (i.e.
+  any character between `0` and `9`).  This gives Lunacy “desktop 
+  calculator” support, allowing one to easily use it to perform numeric
+  computations.
 
 # Changelog
 
+* `2021-03-21` When run in terminal mode, if the first character in an
+  expression is a number, we return the result of the expression.  In 
+  other words, Lunacy now is a “quick and simple” desktop calculator:
+  Type in “lunacy”, then type in a numeric math expression one wants to 
+  solve, e.g. `2 ^ 35`, and Lunacy will return the answer without needing
+  to have the line begin with `=`.
 * `2021-03-06` Fully document `lfs` (luafilesystem) in Lunacy manual.
   Remove spawner.c *NIX compile-time warnings.  Lunacy binary still at
   2021-02-22.
