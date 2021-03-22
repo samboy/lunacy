@@ -9,7 +9,7 @@
   <xsl:template match="outline:outline">
     <html>
       <head>
-        <title>Lunacy (Lua 5.1) 2021-02-22 Reference</title>
+        <title>Lunacy (Lua 5.1) 2021-03-21 Reference</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <style>
           h1 {

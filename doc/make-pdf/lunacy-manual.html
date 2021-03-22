@@ -257,6 +257,20 @@ w:close()
 print(r:read())
 </pre>
 
+<p>
+
+When in interactive mode, if the first character is a number, Lunacy will
+return the results of the arithmetic expression.  This way, if one types
+<code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
+terminal.
+
+<p>
+
+For things like math.sin(3.141592653 / 4), '=' is still needed, e.g.
+<code>= math.sin(3.141592653 / 4)</code>, but the first character being
+[0-9] (a number) covers the lion’s share of
+desktop calculator usage cases.
+
 <p><A HREF="#contents">Contents</A>
 
 <h1>1 - <a name="1">Introduction</a></h1>
@@ -9165,6 +9179,24 @@ then
 </pre><p>
 is a more portable solution.) 
 
+<p>
+
+Lunacy stand alone can also be used as a desktop calculator.  Simply
+type in “lunacy” without any arguments, and type in numeric expressions
+at the Lunacy terminal prompt.
+
+<p>
+
+When in interactive mode, if the first character is a number, Lunacy will
+return the results of the arithmetic expression.  This way, if one types
+<code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
+terminal.
+
+<p>
+
+For calculation which do not start with a number,
+like math.sin(3.141592653 / 4), “=” needs to be the first
+character, e.g. <code>= math.sin(3.141592653 / 4)</code>
 
 <p><A HREF="#contents">Contents</A>
 
