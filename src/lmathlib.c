@@ -324,9 +324,9 @@ static const luaL_Reg rg32lib[] = {
 ** Open math library
 */
 LUALIB_API int luaopen_math (lua_State *L) {
-  luaL_register(L, LUA_MATHLIBNAME, mathlib);
   luaL_register(L, "rg32", rg32lib); // Use rg32 space so we can have a rg32
                                      // lib for stock Lua
+  luaL_register(L, LUA_MATHLIBNAME, mathlib);
   lua_pushnumber(L, PI);
   lua_setfield(L, -2, "pi");
   lua_pushnumber(L, HUGE_VAL);
