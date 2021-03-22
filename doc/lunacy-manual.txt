@@ -5662,7 +5662,7 @@ end
    types 1 + 1 while in terminal mode, Lunacy will print “2” on the
    terminal.
 
-   For calculation which do not start with a number, like
+   For calculations which do not start with a number, like
    math.sin(3.141592653 / 4), “=” needs to be the first character, e.g. =
    math.sin(3.141592653 / 4)
 
