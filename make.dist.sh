@@ -10,6 +10,8 @@ cp test/*lua lunacy-dist/examples
 mkdir lunacy-dist/LUAstuff
 cp LUAstuff/* lunacy-dist/LUAstuff/
 rm lunacy-dist/LUAstuff/rg32*
+rm lunacy-dist/LUAstuff/bit32.lua
+rm lunacy-dist/LUAstuff/Lua51calc.lua
 cp COPYING lunacy-dist/COPYING.txt
 cp README.md lunacy-dist/README.txt
 unix2dos lunacy-dist/COPYING.txt
