@@ -193,6 +193,9 @@ Some other languages based on Lua:
   languages
 * https://github.com/presidentbeef/brat Semi-esoteric language which compiles
   to Lua
+* https://github.com/kyren/luster Partial Rust implementation (I could not
+  find a full Lua implementation in pure Rust, but there are bindings so
+  Lua can call Rust code)
 
 # LuaJIT
 
