@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2021-03-22)
+Lunacy (Lua) 5.1 Reference Manual (Release 2021-07-28)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -285,6 +285,7 @@ Freely available under the terms of the
 
 
 <A HREF="#pdf-math.rand16">rg32.rand16</A><BR>
+<A HREF="#pdf-rg32.rand32">rg32.rand32</A><BR>
 <A HREF="#pdf-math.random">rg32.random</A><BR>
 <A HREF="#pdf-rg32.runmill">rg32.runmill</A><BR>
 <A HREF="#pdf-math.randomseed">rg32.randomseed</A><BR>
@@ -8155,7 +8156,16 @@ so that the random number library can, if needed, make the same numbers
 as the official RadioGatún[32] test vectors.
 
 <p>
-<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
+<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.
+
+<p>
+<hr><h3><a name="pdf-rg32.rand32"><code>rg32.rand32 ()</code></a></h3>
+
+<p>
+<code>rg32.rand32()</code> can be used to generate 32-bit
+unsigned pseudo-random integers.  Like <code>math.rand16()</code>,
+this function is here so that the random number library can, if needed,
+make the same numbers as the official RadioGatún[32] test vectors.
 
 <p>
 <hr><h3><a name="pdf-rg32.runmill"><code>rg32.runmill (work)</code></a></h3>
@@ -9760,10 +9770,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Mon Mar 22 2021
+Wed Jul 28 2021
 </SMALL>
 <!--
-Last change: math.pi fixed for Lunacy 2021-03-22
+Last change: rg32.rand32() added
 -->
 
 </body></html>

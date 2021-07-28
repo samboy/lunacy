@@ -128,7 +128,7 @@ p+h1, ul+h1 {
 <body>
 
 <hr>
-Lunacy (Lua) 5.1 Reference Manual (Release 2021-03-22)
+Lunacy (Lua) 5.1 Reference Manual (Release 2021-07-28)
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
 and Sam Trenholme
 <p>
@@ -7817,6 +7817,15 @@ as the official RadioGatún[32] test vectors.
 <code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.  
 
 <p>
+<hr><h3><a name="pdf-rg32.rand32"><code>rg32.rand32 ()</code></a></h3>
+
+<p>
+<code>rg32.rand32()</code> can be used to generate 32-bit
+unsigned pseudo-random integers.  Like <code>math.rand16()</code>,
+this function is here so that the random number library can, if needed,
+make the same numbers as the official RadioGatún[32] test vectors.
+
+<p>
 <hr><h3><a name="pdf-rg32.runmill"><code>rg32.runmill (work)</code></a></h3>
 
 <p>
@@ -9421,10 +9430,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Mon Mar 22 2021
+Wed Jul 28 2021
 </SMALL>
 <!--
-Last change: Update for 2021-03-22 (math.pi works again)
+Last change: Update for 2021-07-28 
 -->
 
 </body></html>
