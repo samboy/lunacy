@@ -29,6 +29,8 @@ index d1bf786..30333bf 100644
        base = func + 1;
 ```
 
+Patched in commit 4de84e044c1219b06744bfc0d80f6b8568e58e9a
+
 # CVE-2020-15888
 
 [CVE-2020-15888](https://nvd.nist.gov/vuln/detail/CVE-2020-15888)
@@ -37,8 +39,18 @@ https://github.com/lua/lua/commit/6298903e35217ab69c279056f925fb72900ce0b7
 
 https://github.com/lua/lua/commit/eb41999461b6f428186c55abd95f4ce1a76217d5
 
+As per https://ubuntu.com/security/CVE-2020-15888 this does not look
+to affect earlier versions of Lua.  The patches will not patch against
+Lunacy (Lua 5.1 fork); the relevant code has been completely rewritten.
+
 # CVE-2020-15945
 
 [CVE-2020-15945](https://nvd.nist.gov/vuln/detail/CVE-2020-15945)
 
 https://github.com/lua/lua/commit/a2195644d89812e5b157ce7bac35543e06db05e3
+
+As per https://ubuntu.com/security/CVE-2020-15945 this does not look to
+affect earlier versions of Lua.  The patches will not patch against
+Lunacy (Lua 5.1 fork); the relevant code has been completely rewritten.
+
+
