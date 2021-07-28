@@ -1,9 +1,11 @@
-There following CVEs (possible security holes)
-may need to be patched against:
+Here is a list of CVEs which pop up when I perform a NVD search against
+Lua 5.1.
 
 # CVE-2014-5461
 
 [CVE-2014-5461](https://nvd.nist.gov/vuln/detail/CVE-2014-5461)
+
+Patch:
 
 ```
 From: Enrico Tassi <gareuselesinge@debian.org>
