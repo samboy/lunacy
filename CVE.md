@@ -31,7 +31,8 @@ index d1bf786..30333bf 100644
        base = func + 1;
 ```
 
-Patched in commit 4de84e044c1219b06744bfc0d80f6b8568e58e9a
+Patched in commit 4de84e044c1219b06744bfc0d80f6b8568e58e9a for 
+release 2021-07-28
 
 Note: The exploit code at http://www.lua.org/bugs.html#5.2.2-1 does
 *not* crash Lunacy 2021-03-22.
