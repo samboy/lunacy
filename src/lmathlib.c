@@ -193,6 +193,10 @@ rg rgi(rg*m,rg*b,rg*a){if(*a&2)rgf(m,b);return m[*a^=3];}
 
 static int rg32_rand32 (lua_State *L) {
   uint32_t num;
+  if(rg_phase == 0) {
+    rgl(rg_mill, rg_belt, "1234");
+    rg_phase = 2;
+  }
   num = rgi(rg_mill, rg_belt, &rg_phase);
   num = ((num << 24) | ((num & 0xff00) << 8) | ((num & 0xff0000) >> 8) |
          (num >> 24));
