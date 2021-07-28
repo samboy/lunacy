@@ -1,6 +1,6 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2021-03-22)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2021-07-28)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
@@ -82,7 +82,7 @@ Contents
                                 0 - Lunacy notes
 
    Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny
-   (115,200 byte) Windows 32-bit binary which is (as of 2021) Windows XP
+   (115,712 byte) Windows 32-bit binary which is (as of 2021) Windows XP
    and Windows 10 compatible.
 
    To make sure we don't have issues come January 19, 2038, os.clock(),
@@ -4831,6 +4831,14 @@ print("The 20-sided dice roll is ",math.random(1,20))
    math.rand16() may be called as rg32.rand16().
      __________________________________________________________________
 
+  rg32.rand32 ()
+
+   rg32.rand32() can be used to generate 32-bit unsigned pseudo-random
+   integers. Like math.rand16(), this function is here so that the random
+   number library can, if needed, make the same numbers as the official
+   RadioGatún[32] test vectors.
+     __________________________________________________________________
+
   rg32.runmill (work)
 
    This particular routine does not have a “math” alias because this
@@ -5797,4 +5805,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Mon Mar 22 2021
+   Last update: Wed Jul 28 2021
