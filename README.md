@@ -52,9 +52,11 @@ and [Sourcehut](https://git.sr.ht/~samiam/Lunacy).
   any character between `0` and `9`).  This gives Lunacy “desktop 
   calculator” support, allowing one to easily use it to perform numeric
   computations.
+* Fix for CVE-2014-5461
 
 # Changelog
 
+* `2021-07-28` Bugfix: One line patch to fix CVE-2014-5461
 * `2021-03-22` Bugfix: `math.pi` returns pi again.
 * `2021-03-21` When run in terminal mode, if the first character in an
   expression is a number, we return the result of the expression.  In 
