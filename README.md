@@ -198,6 +198,7 @@ Some other languages based on Lua:
 * https://github.com/kyren/luster Partial Rust implementation (I could not
   find a full Lua implementation in pure Rust, but there are bindings so
   Lua can call Rust code)
+* https://github.com/dibyendumajumdar/ravi A JIT version of Lua 5.3
 
 # LuaJIT
 
