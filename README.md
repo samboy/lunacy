@@ -9,6 +9,8 @@ compiles and runs in Linux (CentOS 7 64-bit).
 Lunacy is available at [GitHub](https://github.com/samboy/lunacy)
 and [Sourcehut](https://git.sr.ht/~samiam/Lunacy).
 
+Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
+
 # Lunacy changes from Lua 5.1
 
 * Lunacy is compiled as a tiny (115,200 byte) Windows 32-bit binary
