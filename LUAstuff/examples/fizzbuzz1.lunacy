@@ -1,0 +1,12 @@
+-- Fizz buzz problem:
+-- If a number is evenly divisible by 15, say "fizz buzz"
+-- Otherwise, numbers evenly divisible by three become "fizz"
+-- Numbers evenly divisible by five become "buzz"
+-- Otherwise, show the number
+
+for a = 1, 100, 1 do -- Go from 1 to 100, increment by 1
+  if a % 15 == 0 then print("fizz buzz")
+  elseif a % 3 == 0 then print("fizz")
+  elseif a % 5 == 0 then print("buzz")
+  else print(a) end
+end
