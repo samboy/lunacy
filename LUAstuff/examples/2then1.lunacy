@@ -1,0 +1,48 @@
+-- Code is public domain
+-- Lunacy version of awk '{print $2 " " $1}'
+--[=[ 
+  This code processes the standard input so that we show the second
+  word visible and make it the first word, then show the first word
+  as the second word.  For example, if given the line "hello there world",
+  it will output "there hello".  If given "1 2 3", it will output "2 1".
+  If given a blank line, it will return a blank line; if given just a 
+  single word like "foo", it will return a space then that word (e.g.
+  "foo" becomes " foo")
+]=]
+-- Since Lunacy doesn't have split(), we make 
+-- it ourselves
+function pStrSplit(s, splitOn)
+  if not splitOn then splitOn = "," end
+  local place = true
+  local out = {}
+  local mark
+  local last = 1
+  while place do
+    place, mark = string.find(s, splitOn, last, false)
+    if place then
+      table.insert(out,string.sub(s, last, place - 1))
+      last = mark + 1
+    end
+  end
+  table.insert(out,string.sub(s, last, -1))
+  return out
+end
+
+-- This is code which reads and processes lines from 
+-- standard input
+l = io.read()
+while l do
+  -- Remove leading whitespace
+  l = string.gsub(l,"^%s+","") 
+  -- AWK-style split: f[1] is $1, etc.
+  f = pStrSplit(l,"%s+") 
+  if f[2] then -- Avoid raising error
+    print(f[2] .. " " .. f[1]) -- print $2 " " $1
+  else
+    print(" " .. f[1]) -- Act like AWK script
+  end
+  l = io.read() -- Read next line. 
+  -- Note that, in Lunacy (Lua), an empty string 
+  -- (and the number 0) evaluate to "true"; only
+  -- "false" and "nil" evaluate to "false"
+end
