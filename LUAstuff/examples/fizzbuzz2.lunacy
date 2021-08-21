@@ -1,0 +1,25 @@
+-- Fizz buzz problem:
+-- If a number is evenly divisible by 15, say "fizz buzz"
+-- Otherwise, numbers evenly divisible by three become "fizz"
+-- Numbers evenly divisible by five become "buzz"
+-- Otherwise, show the number
+-- In this version, we show how "continue" (which Lunacy does not have)
+-- can be emulated by putting "break" in a repeat/until loop
+
+for a = 1, 100, 1 do -- Go from 1 to 100, increment by 1
+  repeat
+    if a % 15 == 0 then 
+      print("fizz buzz")
+      break -- Continue, since we're in a subloop
+    end
+    if a % 3 == 0 then 
+      print("fizz")
+      break -- Continue, since we're in a subloop
+    end
+    if a % 5 == 0 then 
+      print("buzz")
+      break -- Continue, since we're in a subloop
+    end
+    print(a)
+  until true
+end
