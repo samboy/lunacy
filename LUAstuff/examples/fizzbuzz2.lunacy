@@ -1,3 +1,4 @@
+-- Code is public domain
 -- Fizz buzz problem:
 -- If a number is evenly divisible by 15, say "fizz buzz"
 -- Otherwise, numbers evenly divisible by three become "fizz"
