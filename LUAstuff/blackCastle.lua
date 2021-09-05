@@ -8,6 +8,20 @@
 -- the passage was so difficult to find, I had to run the program through 
 -- a 6502 monitor to find it.
 
+-- This only parses JSON input; this can not handle backslashes in strings;
+-- this parser assumes that strings are binary blobs w/o the " character;
+-- this does not generate JSON; this only reads JSON from a file; this uses
+-- tonumber for numeric generation; this allows comments (with #) and bare
+-- words for object keys (both useful non-JSON extensions); this parser 
+-- doesn't care where or one puts (or doesn't put) a "," or ":"; this parser 
+-- makes null in JSON the string "--NULL--"; this parser is a quick and 
+-- dirty hack.
+
+-- Usage:
+
+--   require("blackCastle")
+--   foo = blackCastle("file.json")
+
 function blackCastle(filename)
   local globalError = nil
   local lineNumber = 1
