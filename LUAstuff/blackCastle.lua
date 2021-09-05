@@ -72,7 +72,7 @@ function blackCastle(filename)
         return nil 
       end
       if isWhitespace(char) or char == "," or char == "]" or char == "}" then 
-        return tonumber(out)
+        return tonumber(out), char
       elseif char:find("[0-9%.Ee%+%-]") then
         out = out .. char
       else
@@ -153,7 +153,7 @@ function blackCastle(filename)
           name = name + 1
         end
       elseif char:find("[0-9]") and name then
-        value = getNumber(jsonF, char)
+        value, next = getNumber(jsonF, char)
         if not value then
           globalError = "Error parsing number"
 	  return nil
@@ -164,6 +164,7 @@ function blackCastle(filename)
         else
           name = name + 1
         end
+        if next == "}" or next == "]" then return out end
       elseif char == "[" or char == "{" then
         value = toJsonRecurse(jsonF, char,depth + 1)
         if not value then
