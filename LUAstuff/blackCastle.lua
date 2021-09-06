@@ -104,6 +104,8 @@ function blackCastle(filename)
         return out
       elseif char:find("[A-Za-z0-9%_]") then
         out = out .. char
+      elseif char == "}" or char == "]" then
+        return out, char
       else
         globalError = "Invalid char in word"
         return nil
@@ -144,7 +146,7 @@ function blackCastle(filename)
           name = name + 1
         end
       elseif char == "t" or char == "f" or char == "n" then
-        value = getWord(jsonF, char)
+        value, next = getWord(jsonF, char)
 	-- You do not want to make JSON "null" Lua nil
 	if value == "null" then value = "--NULL--" 
 	elseif value == "false" then value = false
@@ -159,6 +161,7 @@ function blackCastle(filename)
         else
           name = name + 1
         end
+        if next == "}" or next == "]" then return out end
       elseif char:find("[0-9%-]") and name then
         value, next = getNumber(jsonF, char)
         if not value then
