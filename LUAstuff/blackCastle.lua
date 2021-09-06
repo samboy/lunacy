@@ -3,10 +3,17 @@
 -- have written my own (there are plenty of MIT licensed ones)
 
 -- This is called "Black Castle" because Douglas Crockford's (same guy
--- who invented JSON) old game "Galehad and the Holy Grail" had a very 
+-- who invented JSON) old game "Galahad and the Holy Grail" had a very 
 -- difficult puzzle where a secret passage was hidden in the black castle; 
 -- the passage was so difficult to find, I had to run the program through 
--- a 6502 monitor to find it.
+-- a 6502 monitor to find it.  
+
+-- A 1984 review of "Galahad and the Holy Grail" had the same complaint:
+-- In "The book of Atari Software 1984", the reviewer could not find this
+-- secret passage until Atari sent them a map and hint sheet.
+
+-- To Douglas Crockford's credit, the 1985 Antic version of the game has
+-- an arrow in the black castle pointing to the secret passage.
 
 -- This only parses JSON input; this can not handle backslashes in strings;
 -- this parser assumes that strings are binary blobs w/o the " character;
@@ -152,7 +159,7 @@ function blackCastle(filename)
         else
           name = name + 1
         end
-      elseif char:find("[0-9]") and name then
+      elseif char:find("[0-9%-]") and name then
         value, next = getNumber(jsonF, char)
         if not value then
           globalError = "Error parsing number"
