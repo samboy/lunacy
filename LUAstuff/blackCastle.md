@@ -2,21 +2,6 @@
 
 blackCastle is a public domain JSON parser.
 
-## The name
-
-This is called "Black Castle" because Douglas Crockford's (same guy
-who invented JSON) old game "Galahad and the Holy Grail" had a very
-difficult puzzle where a secret passage was hidden in the black castle;
-the passage was so difficult to find, I had to run the program through
-a 6502 monitor to find it.
-
-A 1984 review of "Galahad and the Holy Grail" had the same complaint:
-In "The book of Atari Software 1984", the reviewer could not find this
-secret passage until Atari sent them a map and hint sheet.
-
-To Douglas Crockford's credit, the 1985 Antic version of the game has
-an arrow in the black castle pointing to the secret passage.
-
 ## Usage
 
 ```lua
@@ -24,9 +9,25 @@ require("blackCastle")
 foo = blackCastle("file.json")
 ```
 
+Here, let’s suppose `file.json` looks like this:
+
+```
+{"Hello": "World", "Zork": 3}
+```
+
+Then, to get elements from that JSON file:
+
+
+```lua
+require("blackCastle")
+foo = blackCastle("file.json")
+print(foo["Hello"])
+print(foo["Zork"])
+```
+
 ## String handling
 
-To correctly add support for \ in JSON strings, this library
+To correctly add support for `\` in JSON strings, this library
 would need to have an entire Unicode subsystem: Convert Unicode
 codepoints to UTF-8; convert UTF-8 sequences in to Unicode
 code points (or, at least, make sure we don’t have invalid UTF-8
@@ -37,8 +38,8 @@ times larger.
 So, instead, we just pass the string the JSON gives us as-is as
 a "binary blob" to Lua.  The UTF-8 infinity symbol `∞` will become
 a literal UTF-8 infinity symbol (Hex: E2 88 9E); the sequence
-'\u221e' in a JSON string (which represents the infinity symbol)
-will remain the ASCII string "\u221e" with the backslash passes as-is.
+`\u221e` in a JSON string (which represents the infinity symbol)
+will remain the ASCII string `\u221e` with the backslash passed as-is.
 
 ## null handling
 
@@ -85,4 +86,19 @@ Exceptions to bad JSON being undefined are:
   continue with ASCII letters, numbers, and the `_` character.
 * Commas placed at the end of a list of array or object members before a
   `}` or `]` are ignored.
+
+## The name
+
+This is called "Black Castle" because Douglas Crockford's (same guy
+who invented JSON) old game "Galahad and the Holy Grail" had a very
+difficult puzzle where a secret passage was hidden in the black castle;
+the passage was so difficult to find, I had to run the program through
+a 6502 monitor to find it.
+
+A 1984 review of "Galahad and the Holy Grail" had the same complaint:
+In "The book of Atari Software 1984", the reviewer could not find this
+secret passage until Atari sent them a map and hint sheet.
+
+To Douglas Crockford's credit, the 1985 Antic version of the game has
+an arrow in the black castle pointing to the secret passage.
 
