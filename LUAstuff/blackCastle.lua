@@ -16,18 +16,21 @@
 -- an arrow in the black castle pointing to the secret passage.
 
 -- This only parses JSON input; this can not handle backslashes in strings;
--- this parser assumes that strings are binary blobs w/o the " character;
--- this does not generate JSON; this only reads JSON from a file; this uses
+-- this parser assumes that strings are binary blobs where " only appears
+-- right after the \ character.
+-- 
+-- This does not generate JSON; this only reads JSON from a file; this uses
 -- tonumber for numeric generation; this allows comments (with #) and bare
 -- words for object keys (both useful non-JSON extensions); this parser 
 -- doesn't care where or one puts (or doesn't put) a "," or ":"; this parser 
--- makes null in JSON the string "--NULL--"; this parser is a quick and 
--- dirty hack.
+-- makes null in JSON the string "--NULL--" by default (can be changed to
+-- other values); this parser is a quick and dirty hack.
 
 -- Usage:
 
 --   require("blackCastle")
 --   foo = blackCastle("file.json")
+
 -- blackCastle input: File name with JSON we wish to read
 --             optional input: If the JSON has a null entry, what value
 --                             we should give null.  Defaults to the 
@@ -239,6 +242,7 @@ function blackCastle(filename, nullvalue)
       if not char then break end
       if char == "[" or char == "{" then 
         out = toJsonRecurse(jsonF, char, 1) 
+        jsonF:close()
         if not out then return {_ERROR = globalError, line = lineNumber} end
         return out
       elseif char == "#" then -- Comments, non-JSON extension
@@ -250,9 +254,11 @@ function blackCastle(filename, nullvalue)
       elseif char == "," then
         char = true
       else
+        jsonF:close()
         return {_ERROR = "JSON syntax error", line = lineNumber}
       end 
     end
+    jsonF:close()
     return {}
   end
 
