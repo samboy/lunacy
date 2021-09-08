@@ -12,6 +12,12 @@ w:flush()
 w:close()
 print(r:read())
 
+ * This file is adapted from 
+ * http://mysite.mweb.co.za/residents/sdonovan/lua/spawner-ex.zip
+ * That site is no longer online, but the file has been archived:
+ * https://web.archive.org/web/20210217232306/http://mysite.mweb.co.za/residents/sdonovan/lua/spawner-ex.zip
+ * I also have a mirror of the original file here:
+ * https://maradns.samiam.org/lunacy/spawner-ex.zip
  */
 #ifndef MINGW
 // unix-spawner-ex.c
