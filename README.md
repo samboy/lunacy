@@ -13,7 +13,7 @@ Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
 
 # Lunacy changes from Lua 5.1
 
-* Lunacy is compiled as a tiny (115,200 byte) Windows 32-bit binary
+* Lunacy is compiled as a tiny (115,712 byte) Windows 32-bit binary
   which is (as of 2021) Windows XP and Windows 10 compatible.  This
   binary is in the `bin/` folder.
 * **Security fix** Lunacy uses HalfSipHash-1-3 as its string hash
