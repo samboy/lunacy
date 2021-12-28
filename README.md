@@ -185,7 +185,7 @@ Some other languages based on Lua:
 * https://github.com/leafo/moonscript Lua with Python-like syntax
   (compiles to Lua)
 * https://github.com/yuin/gopher-lua Lua in Go
-* https://roblox.github.io/luau/ Lua for Roblox (not open source)
+* https://github.com/Roblox/luau Lua for Roblox 
 * https://github.com/NLua/NLua Lua for .net
 * https://github.com/bakpakin/Fennel Lisp variant that compiles to Lua
 * https://github.com/fengari-lua/fengari Javascript implementation of Lua
