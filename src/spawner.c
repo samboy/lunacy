@@ -1,3 +1,12 @@
+/* Copyright Steve Donovan.  MIT license; see COPYING
+ * While this was originally released under a different open source 
+ * license, Steve licensed it as MIT here:
+ *      https://marc.info/?l=lua-l&m=164087898814318&w=2
+ *      https://archive.md/Zy1U1
+ *      https://web.archive.org/web/20211230201231/https://marc.info/?l=lua-l&m=164087898814318&w=2
+ * Changed by Sam Trenholme for Lunacy
+ */
+
 /* Implementation of popen2 for Lua
  * This is the only one I found which
  * 1) Works (LuaEx *does not* work)
@@ -27,7 +36,6 @@ print(r:read())
 *  input. (io.popen() is broken on Windows, and has serious problems on Unix)
 *  It provides a spawner object which can be used to capture interactive processes
 * Steve Donovan, 2007. 
-* Released under the same generous licence as SciTE itself.
 */
 #include <pty.h>
 #include <unistd.h>
