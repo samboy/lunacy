@@ -207,6 +207,8 @@ Other embedded languages:
 * https://rune-rs.github.io/ Rune is written in Rust, instead of C
 * https://github.com/marcobambini/gravity
 * https://github.com/ring-lang/ring
+* http://squirrel-lang.org/
+* https://www.tcl-lang.org/ 
 
 # LuaJIT
 
