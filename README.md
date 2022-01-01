@@ -202,6 +202,12 @@ Some other languages based on Lua:
   Lua can call Rust code)
 * https://github.com/dibyendumajumdar/ravi A JIT version of Lua 5.3
 
+Other embedded languages:
+
+* https://rune-rs.github.io/ Rune is written in Rust, instead of C
+* https://github.com/marcobambini/gravity
+* https://github.com/ring-lang/ring
+
 # LuaJIT
 
 LuaJIT is a high performance implementation of Lua 5.1.
