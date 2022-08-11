@@ -18,9 +18,9 @@
 
 
 #define LUA_VERSION     "Lunacy 5.1"
-#define LUA_RELEASE     "Lunacy 2021-07-28"
+#define LUA_RELEASE     "Lunacy 2022-08-11"
 #define LUA_VERSION_NUM 501
-#define LUA_COPYRIGHT   "Copyright 1994-2012 Lua.org PUC-Rio; 2020-2021 Sam Trenholme"
+#define LUA_COPYRIGHT   "Copyright 1994-2012 Lua.org PUC-Rio; 2020-2022 Sam Trenholme"
 #define LUA_AUTHORS     "R. Ierusalimschy, L. H. de Figueiredo, W. Celes, Sam Trenholme"
 
 
