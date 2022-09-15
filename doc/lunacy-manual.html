@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2022-08-11)
+Lunacy (Lua) 5.1 Reference Manual (Release 2022-09-14)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -226,6 +226,9 @@ Freely available under the terms of the
 <A HREF="#pdf-lfs.mkdir">lfs.mkdir</A><BR>
 <A HREF="#pdf-lfs.rmdir">lfs.rmdir</A><BR>
 <A HREF="#pdf-lfs.symlinkattributes">lfs.symlinkattributes</A><BR>
+<P>
+
+<A HREF="#pdf-lunacy.today">lunacy.today</A><BR>
 <P>
 
 <A HREF="#pdf-math.abs">math.abs</A><BR>
@@ -491,7 +494,7 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(115,712 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
+(116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
 and Windows 10 compatible.  
 <p>
 
@@ -502,7 +505,9 @@ To make sure we don't have issues come January 19, 2038,
 (If you want to play with dates, use a 64-bit compile of Lua so we 
  don&rsquo;t have headaches come 2038).  <code>os.time()</code>
 has a simplified API: Only os.time() with no arguments works
-correctly.
+correctly.  In addition, there is now a call,
+<code>lunacy.today()</code>, which returns seven members:
+Year, month, day, day of week, hour, minute, and second.
 
 <p>
 
@@ -8729,11 +8734,8 @@ this function only returns the name of the current locale
 for the given category.
 
 
-
-
 <p>
 <hr><h3><a name="pdf-os.time"><code>os.time()</code></a></h3>
-
 
 <p>
 os.time returns a standard UNIX timestamp: The number
@@ -8749,6 +8751,32 @@ compatible systems until around 2100.
 While the Lua version of this call can accept a table as an argument,
 the Lunacy version of this call accepts no arguments, and always returns a
 simple integer timestamp based on the current system time.
+
+<p>
+<h3><h3><a name="pdf-lunacy.today"><code>lunacy.today ()</code></a></h3>
+
+<p>
+lunacy.today returns the current local time as seven numeric items:
+
+<ol>
+<li>Year (four digit format)
+<li>Month (1-12)
+<li>Day
+<li>Day of week (0-6; 0 is Sunday, 6 saturday)
+<li>Hour (24 hour military time)
+<li>Minute
+<li>Second
+</ol>
+
+Example usage:
+
+<p>
+<code>year, month, day, wday, hour, minute, second = lunacy.today()</code>
+
+<p>
+lunacy.today is Y2038 compliant if compiled on a 64-bit POSIX system
+or as a Windows 32-bit binary.
+
 
 <p>
 <hr><h3><a name="pdf-os.tmpname"><code>os.tmpname ()</code></a></h3>
