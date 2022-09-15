@@ -204,6 +204,8 @@ Some other languages based on Lua:
   find a full Lua implementation in pure Rust, but there are bindings so
   Lua can call Rust code)
 * https://github.com/dibyendumajumdar/ravi A JIT version of Lua 5.3
+* https://github.com/gamesys/moonshine A now-abandoned implementation
+  of Lua in Javascript
 
 Other embedded languages:
 
