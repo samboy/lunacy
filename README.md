@@ -58,6 +58,9 @@ Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
 
 # Changelog
 
+* `2022-09-14` Add `lunacy.today()`
+* `2022-08-11` Bugfix: Make sure bit32.rrotate doesn’t ever engage in
+  undefined behavior
 * `2021-07-28` Bugfix: One line patch to fix CVE-2014-5461
 * `2021-03-22` Bugfix: `math.pi` returns pi again.
 * `2021-03-21` When run in terminal mode, if the first character in an
