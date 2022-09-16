@@ -29,7 +29,6 @@ weekly[2] = init()
 weekly[2]:i("Tuesday stuff")
 
 -- Wednesday
--- Note: Arts classes some afternooons 1-3pm
 weekly[3] = init()
 
 -- Thursday
