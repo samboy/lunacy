@@ -113,7 +113,7 @@ function show(year, mon, day, wday)
   -- due date on the 29/30/31 because, to avoid having too many items
   -- on February 28th, we move stuff after the end of the month to the
   -- next month
-  if day > daysInMonth(mon - 1) then day = day - daysInMonth(mon) end
+  if day > daysInMonth(mon - 1) then day = day - daysInMonth(mon - 1) end
 
   if monthly[day] then 
     for a=1,#monthly[day] do print(monthly[day][a]) seen = true end 
