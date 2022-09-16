@@ -25,6 +25,92 @@ print(foo["Hello"])
 print(foo["Zork"])
 ```
 
+### Optional argument: jsonnull
+
+We can specify what value a JSON `null` has.  Let’s take a
+file `foo.json` which looks like this:
+
+```
+{"foo": null}
+```
+
+And let’s open it with blackCastle:
+
+```lua
+require("blackCastle")
+foo = blackCastle("foo.json")
+print(foo["foo"])
+```
+
+We will get the value `--NULL--`; by default, a JSON `null` becomes
+the Lua string `--NULL--`.  If one wishes to have a different value
+for JSON nulls, this can be done:
+
+```lua
+require("blackCastle")
+foo = blackCastle("foo.json","This is a JSON NULL")
+print(foo["foo"])
+```
+
+We now have the value being the string `This is a JSON NULL`.  The 
+value for a JSON null doesn’t have to be a string:
+
+```lua
+require("blackCastle")
+JSONnull = {}
+foo = blackCastle("foo.json",JSONnull)
+print(JSONnull)
+print(foo["foo"])
+```
+
+Since Lua passes tables by reference, not value, every null in the
+JSON file being read will become a pointer to the special `JSONnull`
+table.  This allows the JSON nulls to have a value which can not
+exist in the input JSON.
+
+### Optional argument: isArrayKey
+
+Since Lua does not distinguish a bona fide list array from a table
+(where the key can be a string, number, pointer, etc.), but JSON does
+have a special list type, we can specify that Lua tables generated
+when reading a JSON list have a special key whose value will be `true`
+if the table in question is a JSON list.
+
+This special value will be the third argument to the `blackCastle`
+function.  If not specified, JSON lists will not have a special member
+to indicate they are a list (instead of a conventional table).
+
+For example, let’s rewrite that foo.json:
+
+```
+{
+"nullBoy": null,
+"listBoy": ["one", "two"],
+"tableTime": {"foo": "bar", "baz": "bozzle"}
+}
+```
+
+And let’s import it using blackCastle:
+
+```lua
+require("blackCastle")
+JSONnull = {}
+JSONlist = {}
+foo = blackCastle("foo.json",JSONnull,JSONlist)
+print(JSONnull)
+print(foo["nullBoy"])
+print("--")
+print(foo["listBoy"][JSONlist])
+print(foo["tableTime"][JSONlist])
+```
+
+Here, observe that the *key* of a Lua table, like the value, can be
+the pointer to the table; we use a pointer here to ensure that the
+JSON can not generate a list which the same key.  It’s also possible to
+pass a string, e.g. `foo = blackCastle("foo.json",JSONnull,"@IsList")`,
+but there is the possibility that a value JSON object with the key
+`@IsList` would appear to be a list when parsed by BlackCastle.
+
 ## String handling
 
 To correctly add support for `\` in JSON strings, this library

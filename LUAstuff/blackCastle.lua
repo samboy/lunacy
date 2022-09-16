@@ -32,11 +32,17 @@
 --   foo = blackCastle("file.json")
 
 -- blackCastle input: File name with JSON we wish to read
---             optional input: If the JSON has a null entry, what value
+--             nullvalue: (optional) if the JSON has a null entry, what value
 --                             we should give null.  Defaults to the 
 --                             string "--NULL--"
+--             isArrayKey: (optional) if the JSON is reading in a list, we
+--                         will set, in the resulting LUA table, a value
+--                         which is true for this key.  This way, we can
+--                         distinguish bona fide list arrays from 
+--                         dictionary style arrays (both are the same in 
+--                         Lua)
 
-function blackCastle(filename, nullvalue)
+function blackCastle(filename, nullvalue, isArrayKey)
   local globalError = nil
   local lineNumber = 1
   if not nullvalue then nullvalue = "--NULL--" end
@@ -144,7 +150,12 @@ function blackCastle(filename, nullvalue)
     local char = true
     local name = nil
     local value = nil
-    if mode == "[" then name = 1 end
+    if mode == "[" then 
+      name = 1 
+      if isArrayKey then
+        out[isArrayKey]=true
+      end
+    end
     while char do
       char = jsonF:read(1)
       if not char then return out end

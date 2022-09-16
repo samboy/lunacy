@@ -1,0 +1,11 @@
+# This is an extended type of JSON which the blackCastle parser can handle
+# blackCastle allows comments like this in JSON, and it allows bare words
+# as object keys.  Otherwise, it's JSON, but with no support for \ inside
+# of strings.
+
+{foo: "bar",
+ bar: {"life": 
+ "Happy", "number": 1.234}
+ "bozzle": {foo: true},
+ "baz": ["hello", "world!"],
+}

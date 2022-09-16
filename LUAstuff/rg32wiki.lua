@@ -1,35 +1,19 @@
-#!/usr/bin/env lua
+-- Placed in the public domain 2020, 2022 Sam Trenholme
 
--- Placed in the public domain 2020 Sam Trenholme
-
--- This is a version of RadioGatun[32] (RG32) which uses bit32.  This is
--- faster than the pure LUA 5.1 implementation of RG32, but needs either
--- a Lua 5.1 port of the bit32 library (Roblox and Lunacy have both
--- done this), or Lua 5.2/5.3 (bit32 was removed from Lua 5.4)
--- LuaJIT does not have bit32, but its bit library is close enough for us
--- to be able to use it.
-
--- Lua 5.4 and LuaJIT 2.1.0-beta3 compatibility
-if not bit32 and tonumber((string.gsub(_VERSION,'^[^ ]+',''))) > 5.3 then
-  require("bit32")
+-- This is a version of RadioGatun[32] (RG32) which uses bit32.
+-- Wikipedia has bit32 in an external library
+if not bit32 then
+  bit32 = require("bit32")
 end
-if not bit32 then bit32 = bit end
-if not bit32.rrotate then bit32.rrotate = bit32.ror end
--- Just in case we do not have ror (e.g. https://github.com/LuaDist/bitlib)
-if not bit32.rrotate then
-  bit32.rrotate = function(a, r)
-    r = r % 32
-    if r == 0 then return a end
-    return bit32.bor(bit32.rshift(a,r),bit32.lshift(a,32-r))
-  end
-end
+
+local p = {}
 
 -- Note that belt and mill are 1-indexed here
-function beltMill(belt, mill) 
+local function beltMill(belt, mill)
 
   -- Mill to belt feedforward
   for z = 0, 11 do
-    offset = z + ((z % 3) * 13) + 1
+    local offset = z + ((z % 3) * 13) + 1
     belt[offset] = bit32.bxor(belt[offset],mill[z + 2])
   end
 
@@ -51,11 +35,11 @@ function beltMill(belt, mill)
     local view = (z + 1) % 19
     local viewPrime = (z + 4) % 19
     mill[z + 1] = bit32.bxor(millPrime[z + 1],
-	millPrime[view + 1],millPrime[viewPrime + 1])
+        millPrime[view + 1],millPrime[viewPrime + 1])
   end
 
   -- Belt rotate
-  for z = 39, 1, -1 do  
+  for z = 39, 1, -1 do
      belt[z + 1] = belt[z]
   end
   for z = 0, 2 do
@@ -67,11 +51,12 @@ function beltMill(belt, mill)
      mill[14 + z] = bit32.bxor(belt[(z * 13) + 1],mill[14 + z])
   end
 
+  -- Iota
   mill[1] = bit32.bxor(mill[1],1)
 end
 
 -- Debug function to show the belt and mill
-function showBeltMill(belt, mill)
+local function showBeltMill(belt, mill)
   for z = 1, 13 do
     print(string.format("%2d %08x %08x %08x %08x",z,mill[z],belt[z],
                         belt[z + 13],belt[z + 26]))
@@ -81,7 +66,7 @@ function showBeltMill(belt, mill)
   end
 end
 
-function initBeltMill()
+local function initBeltMill()
   local belt = {}
   local mill = {}
   for z = 1, 40 do
@@ -95,11 +80,11 @@ end
 
 -- Output strings which are hex numbers in the same endian order
 -- as RadioGatun[32] test vectors, given a float
-function makeLittleEndianHex(i) 
+local function makeLittleEndianHex(i)
   local out = ""
   for z = 1, 4 do
     i = math.floor(i)
-    out = out .. string.format("%02x",i % 256)
+    out = out .. string.format("%02X",i % 256)
     i = i / 256
   end
   return out
@@ -107,7 +92,7 @@ end
 
 -- Output a 256-bit digest string, given a radiogatun state.  Affects belt and
 -- mill, returns string
-function makeRG32sum(belt, mill)
+local function makeRG32sum(belt, mill)
   local out = ""
   for z = 1, 4 do
     out = out .. makeLittleEndianHex(mill[2]) .. makeLittleEndianHex(mill[3])
@@ -117,12 +102,12 @@ function makeRG32sum(belt, mill)
 end
 
 -- RadioGatun input map; given string return belt, mill
-function RG32inputMap(i) 
+local function RG32inputMap(i)
   local belt, mill
   belt, mill = initBeltMill()
   local phase = 0;
   for a = 1, string.len(i) do
-    local c = string.byte(i, a) 
+    local c = string.byte(i, a)
     local b
     c = c % 256
     c = c * (2 ^ (8 * (phase % 4)))
@@ -130,10 +115,10 @@ function RG32inputMap(i)
     belt[(13 * b) + 1] = bit32.bxor(belt[(13 * b) + 1],c)
     mill[17 + b] = bit32.bxor(mill[17 + b],c)
     phase = phase + 1
-    if phase % 12 == 0 then 
+    if phase % 12 == 0 then
       beltMill(belt, mill)
     end
-  end 
+  end
 
   -- Padding byte
   local b = math.floor(phase / 4) % 3
@@ -148,45 +133,56 @@ function RG32inputMap(i)
   return belt, mill
 end
 
--- Verify rg32 sum, if we're using Lunacy (my Lua 5.1 fork)
-function lunacyVerifyVector(i)
-  local out = ""
-  if math.rand16 then
-    math.randomseed(i)
-    for z = 1, 16 do
-      out = out .. string.format("%04x",math.rand16())
+-- Get the input string from a function input
+-- depending on how the parent function is called, this can be a Mediawiki 
+-- table with all args or it can be a simple string.
+local function grabString(i)
+  local input = i
+  if type(input) == "table" then
+    local args = nil
+    local pargs = nil
+    args = input.args
+    pargs = input:getParent().args
+    if args and args[1] then 
+      input = args[1]
+    elseif pargs and pargs[1] then
+      input = pargs[1]
+    else
+      input = "1234" -- Default value
     end
-  end 
-  return out
+  end
+  return input
 end
 
-function RG32sum(i) 
-  local belt, mill = RG32inputMap(i)
-  -- print(lunacyVerifyVector(i)) -- DEBUG
+-- Given an input string, make a string with the hex RadioGatun[32] sum
+function p.rg32sum(i)
+  local belt, mill = RG32inputMap(grabString(i))
   return makeRG32sum(belt,mill)
 end
 
--- Initialize a RG32 state we can get 32-bit PRNGs from
-function RG32init(i)
-  local belt, mill = RG32inputMap(i)
-  return {belt = belt, mill = mill, phase = 1}
+-- Given an input to hash, return a formatted version of the hash
+-- with both the input and hash value
+function p.rg32(i)
+  local input = grabString(i)
+  local rginput
+  -- Remove formatting from the string we give to the rg32 engine
+  rginput = input:gsub("{{Background color|#%w+|(%w+)}}","%1")
+  rginput = rginput:gsub("<[^>]+>","") -- Remove HTML tags
+  rginput = rginput:gsub("%[%[Category[^%]]+%]%]","") -- Remove categories
+  local sum = p.rg32sum(rginput)
+  -- This is the output in Mediawiki markup format we give to
+  -- the caller of this function
+  return(' RadioGatun[32]("' .. input .. '") =\n ' .. sum)
 end
 
--- This returns a 32-bit pseudo-random integer from a RG32 state
-function RG32rand32(state)
-  if state.phase == 1 then
-    state.phase = 2
-  elseif state.phase == 2 then
-    state.phase = 3
+-- This script is a standalone Lua script outside of the Wikipedia
+if not mw then
+  if arg and arg[1] then
+    print(p.rg32(arg[1]))
   else
-    state.phase = 2
-    beltMill(state.belt,state.mill)
+    print(p.rg32(
+'The quick brown fox jumps over the lazy {{Background color|#87CEEB|d}}og'))
   end
-  return state.mill[state.phase]
 end
 
--- Example API usage
--- rs = RG32init("1234")
--- print(RG32rand32(rs))
--- print(RG32sum("1234"))
- 
+return p
