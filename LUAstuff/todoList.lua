@@ -73,7 +73,7 @@ function isLeapYear(year)
 end
 
 -- Calculate the day of the week
--- Input: year, month, day 
+-- Input: year, month, day (e.g. 2022,9,16)
 -- Output: day of week (0 = Sunday, 6 = Saturday)
 function dayOfWeek(year, month, day)
   -- Tomohiko Sakamoto algorithm
