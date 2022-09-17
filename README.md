@@ -6,8 +6,9 @@ a tiny yet powerful stand alone scripting language.
 This is designed to be compiled as a tiny Windows binary, but it also
 compiles and runs in Linux (CentOS 7 64-bit).
 
-Lunacy is available at [GitHub](https://github.com/samboy/lunacy)
-and [Sourcehut](https://git.sr.ht/~samiam/Lunacy).
+Lunacy is available at [GitHub](https://github.com/samboy/lunacy),
+[Sourcehut](https://git.sr.ht/~samiam/Lunacy),
+and [Codeberg](https://codeberg.org/samboy/lunacy).
 
 Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
 
@@ -56,7 +57,7 @@ Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
   computations.
 * Fix for CVE-2014-5461
 
-# Changelog
+# Changelog (Luancy binary only)
 
 * `2022-09-14` Add `lunacy.today()`
 * `2022-08-11` Bugfix: Make sure bit32.rrotate doesn’t ever engage in
