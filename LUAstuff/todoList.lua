@@ -1,4 +1,4 @@
-#!/usr/bin/env lunacy
+#!/usr/bin/env lua
 
 -- This is a to do list.  This to do list can handle appointments on a given
 -- day, weekly recurring items, and monthly recurring items
@@ -70,6 +70,20 @@ function isLeapYear(year)
     return true
   end
   return false
+end
+
+-- Calculate the day of the week
+-- Input: year, month, day 
+-- Output: day of week (0 = Sunday, 6 = Saturday)
+function dayOfWeek(year, month, day)
+  -- Tomohiko Sakamoto algorithm
+  local monthX = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4}
+  if month < 3 then year = year - 1 end
+  local yearX = (year + math.floor(year / 4) - math.floor(year / 100) +
+                 math.floor(year / 400))
+  local out = yearX + monthX[month] + day
+  out = out % 7
+  return out
 end
 
 function daysInMonth(month)
