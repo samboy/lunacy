@@ -17,8 +17,7 @@ Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
 To compile, one needs a POSIX standard `make` program and a C compiler
 with the name `gcc`.  If one wishes to use another C compiler, edit the
 file `Makefile` and change the line `CC= gcc` to use the compiler in
-question.  Note that Lunacy needs to have the `CC` line changed in 
-the file `Makefile` and no other file.
+question.  
 
 To compile on a Linux or compatible system (e.g. Cygwin) with readline
 support (so, when invoked from a terminal, one has arrow history):
@@ -42,6 +41,10 @@ To compile this on another system:
 The code is compatible with gcc (gcc 3.4.2 and gcc 11.3.0), clang (clang
 8.0.1), and will hopefully compile in other compilers, including C++
 compilers, without issue.
+
+If using another name for the Makefile, e.g. `Makefile.foo` which would
+be invoked as `make -f Makefile.foo`, be sure to edit the Makefile used
+and change the line which sets its `MAKEFILE` value.
 
 # Lunacy changes from Lua 5.1
 
