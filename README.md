@@ -50,7 +50,7 @@ and change the line which sets its `MAKEFILE` value.
 # Lunacy changes from Lua 5.1
 
 * Lunacy is compiled as a tiny (116,224 byte) Windows 32-bit binary
-  which is (as of 2021) Windows XP and Windows 10 compatible.  This
+  which is (as of 2022) Windows XP and Windows 10 compatible.  This
   binary is in the `bin/` folder.
 * **Security fix** Lunacy uses HalfSipHash-1-3 as its string hash
   compression function.  It is also possible to use SipHash-1-3 or
