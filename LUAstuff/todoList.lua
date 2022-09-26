@@ -86,6 +86,20 @@ function dayOfWeek(year, month, day)
   return out
 end
 
+-- Alt algorithm for day of week calculation
+-- Same input/output as dayOfWeek
+-- Source: https://news.ycombinator.com/item?id=11358999
+function dayOfWeekZeller(year, month, day)
+  if month < 3 then
+    day = day + year
+    year = year - 1
+  else
+    day = day + year - 2
+  end
+  return ((math.floor((23 * month) / 9) + day + 4 + math.floor(year / 4)) 
+         - math.floor(year / 100) + math.floor(year / 400)) % 7
+end
+
 function daysInMonth(month)
   local mdays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
   if isLeapYear(year) then mdays[2] = 29 end
