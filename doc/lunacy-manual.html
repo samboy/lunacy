@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2022-09-14)
+Lunacy (Lua) 5.1 Reference Manual (Release 2022-10-23)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -8775,8 +8775,10 @@ Example usage:
 
 <p>
 lunacy.today is Y2038 compliant if compiled on a 64-bit POSIX system
-or as a Windows 32-bit binary.
-
+or as a Windows 32-bit binary.  lunacy.today will return nil on
+POSIX systems with a 32-bit time_t; one might be able to resolve this
+and run the code after Y2038 by going to https://github.com/evalEmpire/y2038
+and patching the source code as needed.
 
 <p>
 <hr><h3><a name="pdf-os.tmpname"><code>os.tmpname ()</code></a></h3>
@@ -9798,10 +9800,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Thu Aug 11 2022
+Sun Oct 23 2022
 </SMALL>
 <!--
-Last change: Date updated for 2022-08-11
+Last change: Date updated for 2022-10-23
 -->
 
 </body></html>
