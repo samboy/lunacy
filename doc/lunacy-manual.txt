@@ -1,6 +1,6 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2022-10-23)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2022-11-04)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
@@ -5828,4 +5828,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Sun Oct 23 2022
+   Last update: Fri Nov 4 2022
