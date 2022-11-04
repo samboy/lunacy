@@ -94,6 +94,16 @@ and change the line which sets its `MAKEFILE` value.
 
 # Changelog (Luancy binary only)
 
+* `2022-11-04` Second part of HalfSiphash key is now correctly
+  32 bits instead of 64 bits.  This does not affect how HalfSip runs,
+  except it will now run a little faster since a 64-bit number doesn’t
+  need to be converted in to a 32-bit one.
+* `2022-10-23` `lunacy.today()` returns `nil` if `time_t` is 32-bit.
+  This way, people will deal with the Y2038 issues now instead of
+  on January 19, 2038.  This does not affect the 32-bit Windows build,
+  and it does not affect 32-bit implementations of Linux with a
+  64-bit `time_t` (Alpine Linux, etc.).  This only affects the rare
+  32-bit Linux distribution subbornly holding on to the 32-bit `time_t`.
 * `2022-09-14` Add `lunacy.today()`
 * `2022-08-11` Bugfix: Make sure bit32.rrotate doesn’t ever engage in
   undefined behavior
