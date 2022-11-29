@@ -1,6 +1,6 @@
 #!/usr/bin/env lua
 
--- Placed in the public domain 2020 Sam Trenholme
+-- Placed in the public domain 2020-2022 Sam Trenholme
 
 -- This is a version of RadioGatun[32] (RG32) which uses bit32.  This is
 -- faster than the pure LUA 5.1 implementation of RG32, but needs either
@@ -93,6 +93,21 @@ function initBeltMill()
   return belt, mill
 end
 
+-- Output 32-bit number as 6 base32 digits.  Two bits are discarded
+function makeSimpleBase32(i)
+  local out = ""
+  local map = {'a','b','c','d','e','f','g','h',
+               'j','k','m','n','o','p','q','r',
+               's','t','u','v','w','x','y','z',
+               '2','3','4','5','6','7','8','9'}
+  for z = 1, 6 do
+    i = math.floor(i)
+    out = out .. map[(i % 32) + 1]
+    i = i / 32 
+  end
+  return out
+end
+    
 -- Output strings which are hex numbers in the same endian order
 -- as RadioGatun[32] test vectors, given a float
 function makeLittleEndianHex(i) 
@@ -105,15 +120,21 @@ function makeLittleEndianHex(i)
   return out
 end
 
--- Output a 256-bit digest string, given a radiogatun state.  Affects belt and
--- mill, returns string
-function makeRG32sum(belt, mill)
+-- Output a string, given a radiogatun state and a function to convert a 
+-- number in to a string
+function RG32toAscii(belt, mill, helper)
   local out = ""
   for z = 1, 4 do
-    out = out .. makeLittleEndianHex(mill[2]) .. makeLittleEndianHex(mill[3])
+    out = out .. helper(mill[2]) .. helper(mill[3])
     beltMill(belt, mill)
   end
   return out
+end
+
+-- Output a 256-bit digest string, given a radiogatun state.  Affects belt and
+-- mill, returns string
+function makeRG32sum(belt, mill)
+  return RG32toAscii(belt,mill,makeLittleEndianHex)
 end
 
 -- RadioGatun input map; given string return belt, mill
@@ -189,4 +210,5 @@ end
 -- rs = RG32init("1234")
 -- print(RG32rand32(rs))
 -- print(RG32sum("1234"))
+--belt,mill=RG32inputMap(arg[1]) print(RG32toAscii(belt,mill,makeSimpleBase32))
  
