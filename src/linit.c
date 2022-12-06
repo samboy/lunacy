@@ -23,9 +23,13 @@ static const luaL_Reg lualibs[] = {
   {LUA_STRLIBNAME, luaopen_string},
   {LUA_MATHLIBNAME, luaopen_math},
   {LUA_DBLIBNAME, luaopen_debug},
-  {LUA_LFSLIBNAME, luaopen_lfs},
   {LUA_BITLIBNAME, luaopen_bit32},
+#ifndef NO_LFS
+  {LUA_LFSLIBNAME, luaopen_lfs},
+#endif /* NO_LFS */
+#ifndef NO_SPAWNER
   {LUA_SPAWNERLIBNAME, luaopen_spawner},
+#endif /* NO_SPAWNER */
   {NULL, NULL}
 };
 

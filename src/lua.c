@@ -193,7 +193,7 @@ static int pushline (lua_State *L, int firstline) {
   /* Does first line start with “=” or a number?  If so, print results. */
   if (firstline && b[0] == '=')
     lua_pushfstring(L, "return %s", b+1);  /* change it to `return' */
-  else if(firstline && (b[0] >= '0' && b[0] <= '9'))
+  else if(firstline && ((b[0] >= '0' && b[0] <= '9') || b[0] == '('))
     lua_pushfstring(L, "return %s", b); /* Make it a handy calculator */
   else
     lua_pushstring(L, b);
