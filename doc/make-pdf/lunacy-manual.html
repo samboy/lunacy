@@ -128,7 +128,7 @@ p+h1, ul+h1 {
 <body>
 
 <hr>
-Lunacy (Lua) 5.1 Reference Manual (Release 2022-11-04)
+Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
 and Sam Trenholme
 <p>
@@ -261,7 +261,8 @@ print(r:read())
 
 <p>
 
-When in interactive mode, if the first character is a number, Lunacy will
+When in interactive mode, if the first character is a number or the '('
+character, Lunacy will
 return the results of the arithmetic expression.  This way, if one types
 <code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
 terminal.
@@ -270,7 +271,7 @@ terminal.
 
 For things like math.sin(3.141592653 / 4), '=' is still needed, e.g.
 <code>= math.sin(3.141592653 / 4)</code>, but the first character being
-[0-9] (a number) covers the lion’s share of
+[0-9] (a number) or '(' covers the lion’s share of
 desktop calculator usage cases.
 
 <p><A HREF="#contents">Contents</A>
@@ -8860,6 +8861,11 @@ This is a 32-bit rotate.
 
 <p>
 
+<i>Please note: Spawner may not be present, depending on how Lunacy
+   was compiled</i>
+
+<p>
+
 This library provides the ability to have Lunacy open up two-way pipes
 with sub processes.  In other words, it allows Lunacy to spawn a child
 process, and to be able to send data to the sub-process’s standard input
@@ -8935,8 +8941,17 @@ but may be useful if <code>io.popen()</code> is having issues.
 <p><A HREF="#contents">Contents</A>
 <h2>5.12 &ndash; <a name="5.12">lfs</a></h2>
 
+<p>
+
+<i>Please note: Lfs may not be present, depending on how Lunacy
+   was compiled</i>
+
+<p>
+
 Lunacy includes a partial port of the luafilesystem library.  This
 allows for basic directory traversal in Lunacy scripts.
+
+<p>
 
 Example usage:
 
@@ -9227,7 +9242,8 @@ at the Lunacy terminal prompt.
 
 <p>
 
-When in interactive mode, if the first character is a number, Lunacy will
+When in interactive mode, if the first character is a number or the '('
+character, Lunacy will
 return the results of the arithmetic expression.  This way, if one types
 <code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
 terminal.
@@ -9461,10 +9477,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Fri Nov 4 2022
+Tue Dec 6 2022
 </SMALL>
 <!--
-Last change: Update for 2022-11-04 
+Last change: Update for 2022-12-06 
 -->
 
 </body></html>
