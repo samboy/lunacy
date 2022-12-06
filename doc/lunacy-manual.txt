@@ -1,6 +1,6 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2022-11-04)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
@@ -151,14 +151,15 @@ w:flush()
 w:close()
 print(r:read())
 
-   When in interactive mode, if the first character is a number, Lunacy
-   will return the results of the arithmetic expression. This way, if one
-   types 1 + 1 while in terminal mode, Lunacy will print “2” on the
-   terminal.
+   When in interactive mode, if the first character is a number or the '('
+   character, Lunacy will return the results of the arithmetic expression.
+   This way, if one types 1 + 1 while in terminal mode, Lunacy will print
+   “2” on the terminal.
 
    For things like math.sin(3.141592653 / 4), '=' is still needed, e.g. =
    math.sin(3.141592653 / 4), but the first character being [0-9] (a
-   number) covers the lion’s share of desktop calculator usage cases.
+   number) or '(' covers the lion’s share of desktop calculator usage
+   cases.
 
    Contents
 
@@ -5442,6 +5443,9 @@ print("The 20-sided dice roll is ",math.random(1,20))
 
 5.11 – Spawner
 
+   Please note: Spawner may not be present, depending on how Lunacy was
+   compiled
+
    This library provides the ability to have Lunacy open up two-way pipes
    with sub processes. In other words, it allows Lunacy to spawn a child
    process, and to be able to send data to the sub-process’s standard
@@ -5499,8 +5503,13 @@ print(r:read())
 
 5.12 – lfs
 
+   Please note: Lfs may not be present, depending on how Lunacy was
+   compiled
+
    Lunacy includes a partial port of the luafilesystem library. This
-   allows for basic directory traversal in Lunacy scripts. Example usage:
+   allows for basic directory traversal in Lunacy scripts.
+
+   Example usage:
 for a in lfs.dir(".") do
   local b = lfs.attributes(a)
   print(a,b.mode)
@@ -5688,10 +5697,10 @@ end
    type in “lunacy” without any arguments, and type in numeric expressions
    at the Lunacy terminal prompt.
 
-   When in interactive mode, if the first character is a number, Lunacy
-   will return the results of the arithmetic expression. This way, if one
-   types 1 + 1 while in terminal mode, Lunacy will print “2” on the
-   terminal.
+   When in interactive mode, if the first character is a number or the '('
+   character, Lunacy will return the results of the arithmetic expression.
+   This way, if one types 1 + 1 while in terminal mode, Lunacy will print
+   “2” on the terminal.
 
    For calculations which do not start with a number, like
    math.sin(math.pi / 4), “=” needs to be the first character, e.g. =
@@ -5828,4 +5837,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Fri Nov 4 2022
+   Last update: Tue Dec 6 2022
