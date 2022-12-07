@@ -27,6 +27,16 @@ enter the `src/` directory and invoke the `make` command as follows:
         make -f Makefile.readline
 ```
 
+Note that the resulting binary will be GPL licensed.  If this is not
+desired, and arrow history is wanted, Lunacy also has support for 
+[editline](https://github.com/troglobit/editline).  To compile Lunacy
+with editline support, after installing editline:
+
+```
+	make -f Makefile.editline
+```
+
+
 To compile this on a Mingw system:
 
 ```
@@ -94,6 +104,10 @@ and change the line which sets its `MAKEFILE` value.
 
 # Changelog (Luancy binary only)
 
+* `2022-12-06` Editline support added.  `(` can now be first character
+  on lines to enable desktop calculator mode.  Option to compile without
+  spawner and lfs.  MaraDNS’s version of Lunacy is now based on the 
+  2022-12-06 version of Lunacy.
 * `2022-11-04` Second part of HalfSiphash key is now correctly
   32 bits instead of 64 bits.  This does not affect how HalfSip runs,
   except it will now run a little faster since a 64-bit number doesn’t
