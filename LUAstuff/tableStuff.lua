@@ -44,6 +44,34 @@ function sortedByRevValue(t)
   return a
 end
 
+-- This works like sortedTableKeys but allows the table to have both
+-- numeric and string indexes without throwing an error.  All string
+-- indexes will be placed before all numeric indexes; as usual string
+-- indexes are lexically sorted and numeric indexes are numerically
+-- sorted
+function sortedMixedKeys(inputTable)
+  local keyList = {}
+  local index = 1
+  for k,_ in pairs(inputTable) do
+    table.insert(keyList,k)
+  end
+  -- Allow numbers and strings to mix; strings before numbers in sorted list
+  local sf = function(a,b)
+    if(type(a) == 'number' and type(b) == 'string') then
+      return false
+    elseif (type(b) == 'number' and type(a) == 'string') then
+      return true
+    end
+    return a < b
+  end
+  table.sort(keyList, sf)
+  return function()
+    rvalue = keyList[index]
+    index = index + 1
+    return rvalue
+  end
+end
+
 ----------------------- tablePrint() -----------------------
 -- Print out a table on standard output.  Traverse sub-tables, avoid
 -- circular traversals.  The code here has three arguments, but
