@@ -274,6 +274,7 @@ Other embedded languages:
 * https://github.com/ring-lang/ring
 * http://squirrel-lang.org/
 * https://www.tcl-lang.org/ 
+* https://github.com/JoeStrout/miniscript
 
 # LuaJIT
 
