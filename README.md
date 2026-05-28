@@ -358,6 +358,8 @@ Some other languages based on Lua:
 * https://github.com/dibyendumajumdar/ravi A JIT version of Lua 5.3
 * https://github.com/gamesys/moonshine A now-abandoned implementation
   of Lua in Javascript
+* https://github.com/dingyi222666/lua-parser Lua in Kotlin 
+* https://github.com/Martmists-GH/KLua Also Lua in Kotlin
 
 Other embedded languages:
 
