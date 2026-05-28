@@ -37,7 +37,7 @@ Lunacy is available at [GitHub](https://github.com/samboy/lunacy),
 [Sourcehut](https://git.sr.ht/~samiam/Lunacy),
 and [Codeberg](https://codeberg.org/samboy/lunacy).
 
-Lunacy has a [web page](https://maradns.samiam.org/lunacy/).
+Lunacy has a [web page](https://samboy.github.io/MaraDNS/webpage/lunacy/).
 
 # Compiling lunacy
 
