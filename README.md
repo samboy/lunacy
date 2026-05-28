@@ -314,6 +314,17 @@ function sPairs(inputTable,sFunc)
 end
 ```
 
+This code is run the same way one runs `pairs()`; for example:
+
+```
+foo = {a=1, b=2, c=3, d=4, e=5}
+out = ""
+for a in sPairs(foo) do
+  out = out .. a .. " "
+end
+print(out)
+```
+
 # See also
 
 Some other languages based on Lua:
@@ -365,4 +376,8 @@ there are some forks of it:
 
 * https://github.com/moonjit/moonjit/
 * https://github.com/raptorjit/raptorjit
- 
+
+# AI statement
+
+No AI was used in the development of Lunacy, nor to help with 
+writing the documentation for Lunacy.
