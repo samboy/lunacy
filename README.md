@@ -20,10 +20,13 @@ The main differences from Lua 5.1 are:
 I have written a [PDF book](https://samboy.github.io/lunacy-book.pdf) on
 how to program in Lunacy; while this doesn’t cover everything Lunacy
 can do, it covers the kind of text processing I used to do in Perl.
+[Source files for this 
+book](https://samboy.github.io/lunacy/doc) are also available.
 
 There is also a [PDF reference 
 manual](https://samboy.github.io/lunacy-manual.pdf) which covers pretty
-much everything Lunacy can do.
+much everything Lunacy can do.  This manual is also available in [other
+formats](https://samboy.github.io/lunacy/doc).
 
 # OS support and getting Lunacy
 
