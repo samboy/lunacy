@@ -3,8 +3,32 @@ than Lua 5.3 and because there’s a lot of code based on Lua 5.1: Roblox
 Luau, LuaJIT, Gopher Lua, Adobe Lightroom Classic, etc.) designed to be
 a tiny yet powerful stand alone scripting language.
 
-This is designed to be compiled as a tiny Windows binary, but it also
-compiles and runs in Linux (CentOS 7 64-bit).
+The reason for this fork is to have a security hardened version of Lua
+5.1.
+
+The main differences from Lua 5.1 are:
+
+* CVE-2014-5461 has been patched
+* For security reasons, `pairs()` is non-deterministic
+* `math.random()` is cryptographically strong
+* Additional libraries are added: `lfs`, `bit32`, and `spawner`
+* Better desktop calculator support
+* Better documentation
+
+# Lunacy documentation
+
+I have written a [PDF book](https://samboy.github.io/lunacy-book.pdf) on
+how to program in Lunacy; while this doesn’t cover everything Lunacy
+can do, it covers the kind of text processing I used to do in Perl.
+
+There is also a [PDF reference 
+manual](https://samboy.github.io/lunacy-manual.pdf) which covers pretty
+much everything Lunacy can do.
+
+# OS support and getting Lunacy
+
+This can be compiled as a tiny Windows binary, and it also
+compiles and runs in Linux.
 
 Lunacy is available at [GitHub](https://github.com/samboy/lunacy),
 [Sourcehut](https://git.sr.ht/~samiam/Lunacy),
@@ -36,7 +60,6 @@ with editline support, after installing editline:
 	make -f Makefile.editline
 ```
 
-
 To compile this on a Mingw system:
 
 ```
@@ -60,8 +83,9 @@ and change the line which sets its `MAKEFILE` value.
 # Lunacy changes from Lua 5.1
 
 * Lunacy is compiled as a tiny (116,224 byte) Windows 32-bit binary
-  which is (as of 2022) Windows XP and Windows 10 compatible.  This
-  binary is in the `bin/` folder.
+  which is (as of 2026) Windows XP, Windows 10, and Windows 11 compatible.
+  This binary is in the `bin/` folder.
+* **Security fix** CVE-2014-5461 has been patched
 * **Security fix** Lunacy uses HalfSipHash-1-3 as its string hash
   compression function.  It is also possible to use SipHash-1-3 or
   SipHash-2-4 as the compression function; see the section SipHash
@@ -97,10 +121,9 @@ and change the line which sets its `MAKEFILE` value.
   this library for Lua is available at https://github.com/samboy/LUAlibs
 * It is now possible to have Lunacy, when run in terminal mode,
   return the result of any expression which starts with a number (i.e.
-  any character between `0` and `9`).  This gives Lunacy “desktop 
-  calculator” support, allowing one to easily use it to perform numeric
-  computations.
-* Fix for CVE-2014-5461
+  any character between `0` and `9`) or with `(`.  This gives Lunacy 
+  “desktop calculator” support, allowing one to easily use it to 
+  perform numeric computations.
 
 # Changelog (Luancy binary only)
 
@@ -119,7 +142,7 @@ and change the line which sets its `MAKEFILE` value.
   64-bit `time_t` (Alpine Linux, etc.).  This only affects the rare
   32-bit Linux distribution subbornly holding on to the 32-bit `time_t`.
 * `2022-09-14` Add `lunacy.today()`
-* `2022-08-11` Bugfix: Make sure bit32.rrotate doesn’t ever engage in
+* `2022-08-11` Bugfix: Make sure `bit32.rrotate` doesn’t ever engage in
   undefined behavior
 * `2021-07-28` Bugfix: One line patch to fix CVE-2014-5461
 * `2021-03-22` Bugfix: `math.pi` returns pi again.
@@ -159,7 +182,29 @@ Lunacy, by default, uses HalfSipHash-1-3 as its hash compression
 algorithm.  This has reasonable security, while being very fast
 when Lunacy is compiled as a 32-bit or 64-bit binary.
 
-To instead compile Lunacy to use 64-bit SipHash-1-3, edit 
+As a result, `pairs()` is no longer deterministic.  Let’s look at this
+code
+
+```
+#!/usr/bin/env lunacy
+foo = {a=1, b=2, c=3, d=4, e=5}
+out = ""
+for a in pairs(foo) do
+  out = out .. a .. " "
+end
+print(out)
+```
+
+In Lua 5.1, the above will generate the same output over and over (in
+Lua 5.4.4 and LuaJIT, multiple runs of the above code will generate 
+different outputs); in Lunacy, each invocation of the above code will 
+generate a different output.
+
+In cases where we need a deterministic `pairs()`, see `sPairs()`
+below.
+
+If running on a 64-bit system, it may be desirable to
+compile Lunacy to use 64-bit SipHash-1-3.  To do so, edit 
 `src/Makefile` to add the flag `-DFullSipHash`, e.g.:
 
 ```
@@ -220,7 +265,7 @@ HalfSipHash-1-3 is as fast as full SipHash-1-3 on 64-bit CPUs, while
 being quite a bit faster for 32-bit binaries compared to 64-bit sipHash.
 
 HalfSipHash-1-3 is only 2.5% slower on 32-bit machines (compared to
-Lua’s  “stock” hash); it is only 2.9% slower on 64-bit machines.
+Lua’s “stock” hash); it is only 2.9% slower on 64-bit machines.
 
 In Lunacy’s use case, HalfSipHash should provide an adequate security margin;
 as per [what its designer has to 
@@ -235,6 +280,39 @@ say](http://lkml.iu.edu/hypermail/linux/kernel/1612.2/01666.html):
 >Too, HalfSipHash only has a 64-bit key, not a 128-bit key like SipHash, so
 >only use this as a mitigation for hash-flooding attacks, where the output of
 >the hash function is never directly shown to the caller.
+
+# sPairs()
+
+Since `pairs()` is non-deterministic, in cases where it’s desirable to
+iterate through a table in a consistent manner, I have this public domain
+Lua/Lunacy code to sort the elements of a table when iterating through
+it:
+
+```
+function sPairs(inputTable,sFunc)
+  if not sFunc then
+    sFunc = function(a, b)
+      local ta = type(a)
+      local tb = type(b)
+      if(ta == tb)
+        then return a < b
+      end
+      return ta < tb
+    end
+  end
+  local keyList = {}
+  local index = 1
+  for k,_ in pairs(inputTable) do
+    table.insert(keyList,k)
+  end
+  table.sort(keyList,sFunc)
+  return function()
+    rvalue = keyList[index]
+    index = index + 1
+    return rvalue, inputTable[rvalue]
+  end
+end
+```
 
 # See also
 
