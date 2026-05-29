@@ -255,7 +255,7 @@ static int spawner_use_shell(lua_State* L)
 	Spawner* spp = (Spawner*)lua_touserdata(L,1);
 	char* new_command;
 	new_command = (char*)malloc(strlen(spp->command_line)+20);
-	sprintf(new_command,"/bin/sh -c %s",spp->command_line);
+	snprintf(new_command,strlen(spp->command_line)+20,"/bin/sh -c '%s'",spp->command_line);
 	spp->command_line = new_command;
 	return 0;
 }
@@ -804,7 +804,7 @@ static BOOL start_process(Spawner* p)
 static void send_to_scite(lua_State* L, const char* fun, const char* args)
 {
     char* command = (char*)malloc(strlen(fun)+strlen(args)+1+1);
-    sprintf(command,"%s %s",fun,args);
+    snprintf(command,strlen(fun)+strlen(args)+2,"%s %s",fun,args);
     SendMessage(hwndDispatcher, STE_WM_ONEXECUTE, (WPARAM)L, (LPARAM)command);
 }
 
@@ -815,7 +815,7 @@ static void monitor_process(Spawner* p)
         GetExitCodeProcess(p->pi.hProcess, &exitcode);	
         CloseHandle(p->pi.hProcess);
         if (p->result) {
-            sprintf(buffer,"%d",exitcode);
+            snprintf(buffer,sizeof(buffer),"%d",exitcode);
             send_to_scite(p->L,p->result,buffer);
         }	
     }
@@ -838,10 +838,10 @@ static void run_process(Spawner* p)
             if (bTest && bytesRead) {
                 linebuf[bytesRead] = '\0';
                 if (fulllines && linebuf[bytesRead-1] == '\n') {
-                    strcat(buffer,linebuf);
+                    strcat_s(buffer,sizeof(buffer),linebuf);
                     break;
                 } else {
-                    strcat(buffer,linebuf);
+                    strcat_s(buffer,sizeof(buffer),linebuf);
                 }				
             } else {
                 p->running = FALSE;
@@ -853,7 +853,7 @@ static void run_process(Spawner* p)
     GetExitCodeProcess(p->pi.hProcess, &exitcode);	
     CloseHandle(p->pi.hProcess);
     if (p->result) {
-        sprintf(buffer,"%d",exitcode);
+        snprintf(buffer,sizeof(buffer),"%d",exitcode);
         send_to_scite(p->L,p->result,buffer);
     }
     //* fclose(reader);
@@ -892,8 +892,8 @@ static int spawner_use_shell(lua_State* L)
     char* new_command;
     const char* comspec = getenv("COMSPEC");
     if (! comspec) comspec = "CMD.EXE";
-    new_command = (char*)malloc(strlen(spp->command_line)+20);
-    sprintf(new_command,"%s /c %s",comspec,spp->command_line);
+    new_command = (char*)malloc(strlen(spp->command_line)+strlen(comspec)+20);
+    snprintf(new_command,strlen(spp->command_line)+strlen(comspec)+20,"%s /c %s",comspec,spp->command_line);
     spp->command_line = new_command;
     return 0;
 }
@@ -954,7 +954,7 @@ static Spawner* start_popen(lua_State* L)
     spp->command_line = luaL_checkstring(L,1);
     if (! comspec) comspec = "CMD.EXE";
     new_command = (char*)malloc(strlen(spp->command_line) + strlen(comspec) + 20);
-    sprintf(new_command,"%s /c %s",comspec,spp->command_line);
+    snprintf(new_command,strlen(spp->command_line)+strlen(comspec)+20,"%s /c %s",comspec,spp->command_line);
     spp->command_line = new_command;
     if (! start_process(spp)) {
         lua_pushboolean(L,FALSE);
