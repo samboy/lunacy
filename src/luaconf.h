@@ -662,6 +662,7 @@ union luai_Cast { double l_d; long l_l; };
 #if defined(loslib_c) || defined(luaall_c)
 
 #ifndef MINGW
+#ifndef NOMKSTEMP
 #include <unistd.h>
 #define LUA_TMPNAMBUFSIZE       32
 #define lua_tmpnam(b,e) { \
@@ -669,7 +670,10 @@ union luai_Cast { double l_d; long l_l; };
         e = mkstemp(b); \
         if (e != -1) close(e); \
         e = (e == -1); }
-
+#else // NOMKSTEMP
+#define LUA_TMPNAMBUFSIZE       L_tmpnam
+#define lua_tmpnam(b,e)         { e = (tmpnam(b) == NULL); }
+#endif // NOMKSTEMP
 #else // MINGW
 #define LUA_TMPNAMBUFSIZE       L_tmpnam
 #define lua_tmpnam(b,e)         { e = (tmpnam(b) == NULL); }
