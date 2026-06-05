@@ -31,7 +31,9 @@ formats](https://samboy.github.io/lunacy/doc).
 # OS support and getting Lunacy
 
 This can be compiled as a tiny Windows binary, and it also
-compiles and runs in Linux.
+compiles and runs in Linux.  Since Lunacy is written in pure C,
+it should be able to compile pretty much anywhere else, but this
+has not been tested.
 
 Lunacy is available at [GitHub](https://github.com/samboy/lunacy),
 [Sourcehut](https://git.sr.ht/~samiam/Lunacy),
@@ -75,9 +77,10 @@ To compile this on another system:
 	make
 ```
 
-The code is compatible with gcc (gcc 3.4.2 and gcc 11.3.0), clang (clang
-8.0.1), and will hopefully compile in other compilers, including C++
-compilers, without issue.
+The code is compatible with `gcc` (gcc 3.4.2 and gcc 11.3.0), `clang` (clang
+8.0.1), and will probably compile in other compilers, including C++
+compilers, without issue, e.g. it has been compiled and runs 
+with `tcc` (tcc 0.9.25 for Windows).
 
 If using another name for the Makefile, e.g. `Makefile.foo` (which would
 be invoked as `make -f Makefile.foo`), be sure to edit the Makefile used
