@@ -237,9 +237,9 @@
 #include <io.h>
 #include <stdio.h>
 #define lua_stdin_is_tty()      _isatty(_fileno(stdin))
-#else
+#else // LUA_USE_ISATTY
 #define lua_stdin_is_tty()      1  /* assume stdin is a tty */
-#endif
+#endif // LUA_USE_ISATTY
 
 
 /*
@@ -278,33 +278,29 @@
 * editline is a non-GPL api-compatible readline like library.
 * editline is at https://github.com/troglobit/editline/releases/
 */
-#if defined(LUA_USE_READLINE)
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
-#define lua_saveline(L,idx) \
-        if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
-          add_history(lua_tostring(L, idx));  /* add it to history */
-#define lua_freeline(L,b)       ((void)L, free(b))
-#else
+
+#if !defined(LUA_USE_READLINE) && !defined(LUA_USE_EDITLINE)
 #define lua_readline(L,b,p)     \
         ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
         fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
 #define lua_saveline(L,idx)     { (void)L; (void)idx; }
 #define lua_freeline(L,b)       { (void)L; (void)b; }
-#endif
-
-#if defined(LUA_USE_EDITLINE)
+#else
 #include <stdio.h>
+#if defined(LUA_USE_READLINE)
+#include <readline/readline.h>
+#include <readline/history.h>
+#else // LUA_USE_READLINE
 #include <editline.h>
+#endif // LUA_USE_READLINE
 #define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
 #define lua_saveline(L,idx) \
         if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
           add_history(lua_tostring(L, idx));  /* add it to history */
-#endif
+#define lua_freeline(L,b)       ((void)L, free(b))
+#endif // !LUA_USE_READLINE && !LUA_USE_EDITLINE
 
-#endif
+#endif // lua_c || luaall_c
 
 /* }================================================================== */
 
@@ -780,5 +776,5 @@ union luai_Cast { double l_d; long l_l; };
 
 
 
-#endif
+#endif // lconfig_h
 
