@@ -60,11 +60,20 @@ static void DumpVector(const void* b, int n, size_t size, DumpState* D)
 
 static void DumpString(const TString* s, DumpState* D)
 {
- if (s==NULL || getstr(s)==NULL)
+ if (s==NULL)
  {
   size_t size=0;
   DumpVar(size,D);
  }
+// The following generates a warning in GCC 16.  If this is an issue, just
+// uncomment the following #if and #endif
+//#if !defined(__GNUC__) || defined(__clang__)
+ else if (getstr(s)==NULL)
+ {
+  size_t size=0;
+  DumpVar(size,D);
+ }
+//#endif // !__GNUC__ || __clang__
  else
  {
   size_t size=s->tsv.len+1;             /* include trailing '\0' */

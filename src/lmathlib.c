@@ -185,7 +185,8 @@ uint32_t rg_belt[40], rg_mill[19], rg_phase = 0, rg_place = 0, rg_num = 0;
 void rgf(rg*a,rg*b){rg m=19,A[45],x,o=13,c,y,r=0;rgp(12)b[c+c%3*o]^=a
 [c+1];rgp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=A
 [c+m]=x>>r|x<<(32-r)%32;}
-for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^A[y+4];*a^=1;
+for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^A[y+4];
+*a^=1;
 rgp(3)a[c+o]^=b[c*o]=b[c*o+o];}
 void rgl(rg*u,rg*w,const char*v){rg s,q,c,x;rgp(40)w[c]=u[c%19]=0;for
 (;;rgf(u,w)){rgp(3){for(s=q=0;q<4;){x=*v++;s|=(x?255&x:1)<<8*q++;if(!
