@@ -7,7 +7,7 @@
 # Your platform. See PLATS for possible values.
 PLAT= ansi
 
-CC= gcc
+#CC= gcc
 CFLAGS= -O3 -Wall $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
