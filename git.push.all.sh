@@ -7,9 +7,9 @@ for a in origin sourcehut codeberg ; do
   echo
 done
 
-echo Gitlab annoyance: I had to use Chrome to update my SSH key
-git push gitlab
-echo
+#echo Gitlab annoyance: I had to use Chrome to update my SSH key
+#git push gitlab
+#echo
 
 cat > /dev/null << EOF
 [remote "origin"]
