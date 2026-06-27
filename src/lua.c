@@ -387,23 +387,32 @@ int main (int argc, char **argv) {
 // Getting randomness for SipHash in a cross platform manner is a pain
 #ifdef FullSipHash
   char noise[18];
-#else
+#else  // FullSipHash
   char noise[10];
-#endif
+#endif // FullSipHash
   int a = 0;
 #ifndef MINGW
   FILE *rfile = NULL;
+#ifndef WINTCC
   rfile = fopen("/dev/urandom","rb");
+#else  // WINTCC
+  rfile = fopen("/LURANDOM.TXT","rb");
+#endif // WINTCC
   if(rfile == NULL) {
+#ifndef WINTCC
     puts("You do not have /dev/urandom");
     puts("I refuse to run under these conditions");
+#else  // WINTCC
+    puts("Please create a file in the root directory called LURANDOM.TXT");
+    puts("Please have at least 19 bytes of random text in that file");
+#endif // WINTCC
     exit(1);
   }
 #ifdef FullSipHash
   for(a=0;a<16;a++) {
-#else
+#else  // FullSipHash
   for(a=0;a<8;a++) {
-#endif
+#endif // FullSipHash
     int b;
     b = getc(rfile);
     noise[a] = b;
@@ -416,9 +425,9 @@ int main (int argc, char **argv) {
   if(q == 1) {
 #ifdef FullSipHash
     q = CryptGenRandom(CryptContext, 16, noise);
-#else
+#else  // FullSipHash
     q = CryptGenRandom(CryptContext, 8, noise);
-#endif
+#endif // FullSipHash
   }
   if(q == 0) {
     puts("I can not generate strong random numbers");

@@ -8,16 +8,16 @@
 # https://samboy.github.io/blog/busybox/tcc-compiler.7z
 # (Source: https://samboy.github.io/blog/busybox/tcc-0.9.25.tar.xz)
 # To make using that version of TCC and Busybox, use this makefile.
-# Next, make a directory /dev, then make, using Microsoft Edit (which is
-# *also* open source these days, believe it or not) a file called 
-# "/dev/urandom" with about a line of random text in it.
+# Then, as an administrator with the cmd prompt:
+# cd \
+# edit LURANDOM.TXT
+#
+# Put about one line of random text (at least 19 bytes) in that file
 #
 # If using Busybox as noted above, the following commands will make
 # an even more suitable urandom file for Lunacy:
-# 	mkdir /dev
-# 	cd /dev
-# 	dd if=/dev/urandom of=foo count=1
-# 	mv foo urandom
+# 	cd /
+# 	dd if=/dev/urandom of=LURANDOM.TXT count=1
 # (Busybox for Windows has urandom emulation)
 
 # see ../INSTALL for installation instructions
@@ -29,7 +29,7 @@
 PLAT= ansi
 
 CC= tcc
-CFLAGS= -Os -Wall $(MYCFLAGS) -DNO_SPAWNER -DNOMKSTEMP
+CFLAGS= -Os -Wall $(MYCFLAGS) -DNO_SPAWNER -DNOMKSTEMP -DWINTCC
 AR= true
 RANLIB= true
 RM= rm -f
