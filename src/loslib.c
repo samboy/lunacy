@@ -4,7 +4,7 @@
 ** See Copyright Notice in lua.h
 */
 
-
+#define _POSIX_C_SOURCE 200809L
 #include <errno.h>
 #include <locale.h>
 #include <stdlib.h>
