@@ -596,9 +596,9 @@ function sPairs(inTable, sFunc)
       local ta = type(a)
       local tb = type(b)
       if(ta == tb)
-        then return a > b
+        then return a &lt; b
       end
-      return tostring(ta) >
+      return tostring(ta) &lt;
              tostring(tb)
     end
   end
