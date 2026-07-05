@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
+Lunacy (Lua) 5.1 Reference Manual (Release 2026-07-04)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -20,7 +20,7 @@ and Sam Trenholme
 <p>
 <small>
 Copyright &copy; 2006-2012 Lua.org, PUC-Rio.
-Copyright &copy; 2020-2022 Sam Trenholme.
+Copyright &copy; 2020-2026 Sam Trenholme.
 Freely available under the terms of the
 <a href="http://www.lua.org/license.html">Lua license</a>.
 </small>
@@ -492,8 +492,8 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
-and Windows 10 compatible.  
+(116,224 byte) Windows 32-bit binary which is (as of 2026) Windows XP,
+Windows 10, and Windows 11 compatible.  
 <p>
 
 To make sure we don't have issues come January 19, 2038, 
@@ -581,6 +581,41 @@ Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
 
+<p><i>Security note</i> An attacker with access to the order items
+are iterated from a table can obtain the SipHash key with 2^64 effort.
+If this is a concern, please do not expose the output of table
+iterators to untrusted parties.  One simple way to do this is
+to use the following public domain <tt>sPairs()</tt> function instead
+of <tt>pairs()</tt> (usage is the same, e.g. 
+<tt>for key,value in sPairs(someTable)</tt>):
+
+<pre>
+function sPairs(inTable, sFunc)
+  if not sFunc then
+    sFunc = function(a, b)
+      local ta = type(a)
+      local tb = type(b)
+      if(ta == tb)
+        then return a > b
+      end
+      return tostring(ta) >
+             tostring(tb)
+    end
+  end
+  local keyList = {}
+  local index = 1
+  for k,_ in pairs(inTable) do
+    table.insert(keyList,k)
+  end
+  table.sort(keyList, sFunc)
+  return function()
+    key = keyList[index]
+    index = index + 1
+    return key, inTable[key]
+  end
+end
+</pre>
+
 <p>
 
 Lunacy also has a port of Steve Donovan’s spawner library so that 
@@ -599,6 +634,10 @@ w:close()
 print(r:read())
 </pre>
 
+<p>
+<i>Security note</i> Please do not pass untrusted input to the
+<tt>spawner</tt> calls; they do not escape shell characters and
+allow any program to be executed.
 <p>
 
 When in interactive mode, if the first character is a number or the '('
@@ -9814,10 +9853,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Tue Dec 6 2022
+Sun Jul 5 2026
 </SMALL>
 <!--
-Last change: Date updated for 2022-12-06
+Last change: Date updated for 2026-07-05
 -->
 
 </body></html>
