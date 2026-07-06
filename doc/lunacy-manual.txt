@@ -104,6 +104,7 @@ Contents
 
    Lunacy also includes a built in version of the commonly used
    luafilesystem suite:
+
 for a in lfs.dir(".") do
   local b = lfs.attributes(a)
   print(a,b.mode)
@@ -146,6 +147,7 @@ end
    untrusted parties. One simple way to do this is to use the following
    public domain sPairs() function instead of pairs() (usage is the same,
    e.g. for key,value in sPairs(someTable)):
+
 function sPairs(inTable, sFunc)
   if not sFunc then
     sFunc = function(a, b)
@@ -176,6 +178,7 @@ end
    output piped to the Lunacy script.
 
    Example popen2 usage:
+
 w, r = spawner.popen2("wc")
 w:write("Hello, world!\n")
 w:flush()
