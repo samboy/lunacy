@@ -1,11 +1,11 @@
      __________________________________________________________________
 
-             Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
+             Lunacy (Lua) 5.1 Reference Manual (Release 2026-07-04)
 
    by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
    and Sam Trenholme
 
-   Copyright © 2006-2012 Lua.org, PUC-Rio. Copyright © 2020-2022 Sam
+   Copyright © 2006-2012 Lua.org, PUC-Rio. Copyright © 2020-2026 Sam
    Trenholme. Freely available under the terms of the Lua license.
      __________________________________________________________________
 
@@ -82,8 +82,8 @@ Contents
                                 0 - Lunacy notes
 
    Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny
-   (116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP
-   and Windows 10 compatible.
+   (116,224 byte) Windows 32-bit binary which is (as of 2026) Windows XP,
+   Windows 10, and Windows 11 compatible.
 
    To make sure we don't have issues come January 19, 2038, os.clock(),
    os.date(), and os.difftime() have all been removed (If you want to play
@@ -140,6 +140,37 @@ end
    random 32-bit numbers (uint32_t). Do not call SipHashSetKey() once any
    Lua code is running; otherwise things will break very badly in Lua.
 
+   Security note An attacker with access to the order items are iterated
+   from a table can obtain the SipHash key with 2^64 effort. If this is a
+   concern, please do not expose the output of table iterators to
+   untrusted parties. One simple way to do this is to use the following
+   public domain sPairs() function instead of pairs() (usage is the same,
+   e.g. for key,value in sPairs(someTable)):
+function sPairs(inTable, sFunc)
+  if not sFunc then
+    sFunc = function(a, b)
+      local ta = type(a)
+      local tb = type(b)
+      if(ta == tb)
+        then return a < b
+      end
+      return tostring(ta) <
+             tostring(tb)
+    end
+  end
+  local keyList = {}
+  local index = 1
+  for k,_ in pairs(inTable) do
+    table.insert(keyList,k)
+  end
+  table.sort(keyList, sFunc)
+  return function()
+    key = keyList[index]
+    index = index + 1
+    return key, inTable[key]
+  end
+end
+
    Lunacy also has a port of Steve Donovan’s spawner library so that
    Lunacy has popen2 support to spawn sub-processes with both input and
    output piped to the Lunacy script.
@@ -150,6 +181,10 @@ w:write("Hello, world!\n")
 w:flush()
 w:close()
 print(r:read())
+
+   Security note Please do not pass untrusted input to the spawner calls;
+   they do not escape shell characters and allow any program to be
+   executed.
 
    When in interactive mode, if the first character is a number or the '('
    character, Lunacy will return the results of the arithmetic expression.
@@ -5837,4 +5872,4 @@ end
 
      __________________________________________________________________
 
-   Last update: Tue Dec 6 2022
+   Last update: Sun Jul 5 2026
