@@ -37,6 +37,7 @@ print(r:read())
 *  It provides a spawner object which can be used to capture interactive processes
 * Steve Donovan, 2007. 
 */
+#define _DEFAULT_SOURCE
 #include <pty.h>
 #include <unistd.h>
 #include <sys/types.h>

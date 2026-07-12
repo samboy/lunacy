@@ -11,7 +11,6 @@
 #include <limits.h>
 #include <stddef.h>
 
-
 /*
 ** ==================================================================
 ** Search for "@@" to find all configurable definitions.
@@ -25,8 +24,10 @@
 ** non-ansi feature or library.
 */
 #if defined(__STRICT_ANSI__)
+#ifndef LUA_ANSI
 #define LUA_ANSI
-#endif
+#endif // LUA_ANSI
+#endif // __STRICT_ANSI__
 
 
 #if !defined(LUA_ANSI) && defined(_WIN32)
@@ -61,8 +62,10 @@
 #define LUA_USE_MKSTEMP
 #define LUA_USE_ISATTY
 #define LUA_USE_POPEN
+#ifndef __CYGWIN__
 #define LUA_USE_ULONGJMP
-#endif
+#endif // __CYGWIN__
+#endif // LUA_USE_POSIX
 
 
 /*

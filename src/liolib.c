@@ -4,7 +4,7 @@
 ** See Copyright Notice in lua.h
 */
 
-
+#define _DEFAULT_SOURCE
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
