@@ -1,15 +1,16 @@
 #!/bin/sh
 
-for a in origin sourcehut codeberg ; do
+for a in origin sourcehut codeberg bitbucket ; do
   echo $a
   git push $a
   git push $a --tags 
   echo
 done
 
-#echo Gitlab annoyance: I had to use Chrome to update my SSH key
-#git push gitlab
-#echo
+echo Gitlab annoyance: I had to use Chrome to update my SSH key
+git push gitlab
+git push gitlab --tags
+echo
 
 cat > /dev/null << EOF
 [remote "origin"]
@@ -19,5 +20,9 @@ cat > /dev/null << EOF
         url = git@git.sr.ht:~samiam/Lunacy
 [remote "codeberg"]
         url = git@codeberg.org:samboy/lunacy.git
+[remote "bitbucket"]
+	url = git@bitbucket.org:maradns/lunacy.git
+[remote "gitlab"]
+	url = git@gitlab.com:maradns/lunacy.git
 EOF
 
