@@ -363,6 +363,7 @@ Some other languages based on Lua:
   of Lua in Javascript
 * https://github.com/dingyi222666/lua-parser Lua in Kotlin 
 * https://github.com/Martmists-GH/KLua Also Lua in Kotlin
+* https://github.com/samyeyo/clx Compile Lua to native code
 
 Other embedded languages:
 
