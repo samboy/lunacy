@@ -15,6 +15,48 @@ The main differences from Lua 5.1 are:
 * Better desktop calculator support
 * Better documentation
 
+# Important security notes
+
+Do *not* allow untrusted processes to see the output of `pairs()`.  Instead
+use a wrapper function to sort table keys, e.g.:
+
+```
+-- Like pairs() but sorted
+function sPairs(inTable, sFunc)
+  if not sFunc then
+    sFunc = function(a, b)
+      local ta = type(a)
+      local tb = type(b)
+      if(ta == tb) then
+        if ta == 'number'
+          then return a < b
+        end
+        return tostring(a) <
+               tostring(b)
+      end
+      return ta < tb
+    end
+  end
+  local keyList = {}
+  local index = 1
+  for k,_ in pairs(inTable) do
+    table.insert(keyList,k)
+  end
+  table.sort(keyList, sFunc)
+  return function()
+    key = keyList[index]
+    index = index + 1
+    return key, inTable[key]
+  end
+end
+```
+
+This is used just like `pairs()`, e.g. `for k,v in sPairs(someTable) do`.
+
+Also: Do not pass untrusted input to the `spawner` callsi (e.g. 
+`spawner.popen2()`); they do not escape shell
+characters and allow any program to be executed.
+
 # Lunacy documentation
 
 I have written a [PDF book](https://samboy.github.io/lunacy-book.pdf) on
