@@ -53,7 +53,7 @@ end
 
 This is used just like `pairs()`, e.g. `for k,v in sPairs(someTable) do`.
 
-Also: Do not pass untrusted input to the `spawner` callsi (e.g. 
+Also: Do not pass untrusted input to the `spawner` calls (e.g. 
 `spawner.popen2()`); they do not escape shell
 characters and allow any program to be executed.
 
