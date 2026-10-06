@@ -175,6 +175,8 @@ and change the line which sets its `MAKEFILE` value.
 
 # Changelog (Luancy binary only)
 
+* `2026-07-05` Update to compile more cleanly with C23 compilers.  No
+  changes to the language.
 * `2022-12-06` Editline support added.  `(` can now be first character
   on lines to enable desktop calculator mode.  Option to compile without
   spawner and lfs.  MaraDNS’s version of Lunacy is now based on the 
@@ -384,6 +386,7 @@ Some other languages based on Lua:
 * https://github.com/esle/Bracket-ed-Lua Lua with {} loop brackets
 * https://github.com/leafo/moonscript Lua with Python-like syntax
   (compiles to Lua)
+* https://github.com/DaragonTech/Rulua Lua in Rust (AI written)
 * https://github.com/yuin/gopher-lua Lua in Go
 * https://github.com/Roblox/luau Lua for Roblox 
 * https://github.com/NLua/NLua Lua for .net
