@@ -21,7 +21,7 @@ cat > /dev/null << EOF
 [remote "codeberg"]
         url = git@codeberg.org:samboy/lunacy.git
 [remote "bitbucket"]
-	url = git@bitbucket.org:maradns/lunacy.git
+	url = git@ssh.bitbucket.org:maradns/lunacy.git
 [remote "gitlab"]
 	url = git@gitlab.com:maradns/lunacy.git
 EOF
