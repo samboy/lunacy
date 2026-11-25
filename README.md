@@ -387,12 +387,14 @@ Some other languages based on Lua:
 * https://github.com/leafo/moonscript Lua with Python-like syntax
   (compiles to Lua)
 * https://github.com/DaragonTech/Rulua Lua in Rust (AI written)
+* https://github.com/kyren/luster Partial Rust implementation
 * https://github.com/yuin/gopher-lua Lua in Go
 * https://github.com/Roblox/luau Lua for Roblox 
 * https://github.com/NLua/NLua Lua for .net
-* https://github.com/bakpakin/Fennel Lisp variant that compiles to Lua
 * https://github.com/fengari-lua/fengari Javascript implementation of Lua
 * https://github.com/moonsharp-devs/moonsharp C sharp Lua implementation
+* https://pluto-lang.org/ Backwards compatible Lua 5.5 superset
+* https://github.com/bakpakin/Fennel Lisp variant that compiles to Lua
 * https://github.com/SquidDev/urn Another Lisp variant that compiles to Lua
 * https://github.com/teal-language/tl/ Strongly typed Lua variant 
 * https://github.com/LiXizhi/NPLRuntime Neural Parallel Language
@@ -400,9 +402,6 @@ Some other languages based on Lua:
   languages
 * https://github.com/presidentbeef/brat Semi-esoteric language which compiles
   to Lua
-* https://github.com/kyren/luster Partial Rust implementation (I could not
-  find a full Lua implementation in pure Rust, but there are bindings so
-  Lua can call Rust code)
 * https://github.com/dibyendumajumdar/ravi A JIT version of Lua 5.3
 * https://github.com/gamesys/moonshine A now-abandoned implementation
   of Lua in Javascript
